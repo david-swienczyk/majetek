@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Majetková hlášenka</title>
+  <style>
+    :root {
+      --brand:        #C4DE00;
+      --brand-hover:  #B0C900;
+      --dark:         #004033;
+      --dark-hover:   #005544;
+      --light-bg:     #EAF3A3;
+      --white:        #FFFFFF;
+      --disabled-bg:  #CCD9D6;
+      --disabled-txt: #668C85;
+      --success-bg:   #D3FFC5;
+      --success-txt:  #165315;
+      --error:        #D02B1D;
+      --error-bg:     #FFF3F1;
+      --warning-bg:   #FFEED5;
+      --warning-ib-bg:#FFCB80;
+      --warning-txt:  #6D1F00;
+      --body-sec:     #668C85;
+      --border:       #006B55;
+      --border-light: #CCD9D6;
+      --page-bg:      #F5F9F8;
+
+      --font: 'Direct Sans', Arial, sans-serif;
+
+      --r-btn:    28px;
+      --r-input:  16px;
+      --r-card:   20px;
+
+      --xl: 40px;
+      --l:  32px;
+      --m:  24px;
+      --s:  20px;
+      --xs: 16px;
+      --xxs: 8px;
+
+      --shadow-el:  0 4px 16px rgba(0,64,51,.12);
+      --shadow-mn:  0 2px 8px  rgba(0,64,51,.08);
+      --shadow-mo:  0 8px 40px rgba(0,64,51,.20);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: var(--font);
+      background: var(--page-bg);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 390px;
+      min-height: 100vh;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ── SCREENS ─────────────────────────────── */
+    .screen { display: none; flex-direction: column; min-height: 100vh; }
+    .screen.active { display: flex; }
+
+    /* ── HEADER ──────────────────────────────── */
+    .header {
+      padding: var(--s) var(--xs) 0;
+      background: var(--white);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .product-name {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      color: var(--body-sec);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* ── STEPPER ─────────────────────────────── */
+    .stepper {
+      display: flex;
+      align-items: center;
+      background: var(--white);
+      border-radius: 32px;
+      padding: 8px 12px;
+      box-shadow: var(--shadow-mn);
+      margin-bottom: var(--xs);
+    }
+
+    .step { display: flex; align-items: center; flex: 1; }
+
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+      flex-shrink: 0;
+      transition: all .2s;
+    }
+    .step-circle.past    { background: var(--light-bg); color: var(--dark); }
+    .step-circle.current { background: var(--brand);    color: var(--dark); }
+    .step-circle.future  { background: var(--white);    color: var(--dark); border: 1.5px solid var(--border-light); }
+
+    .step-line { flex: 1; height: 2px; border-radius: 100px; margin: 0 4px; }
+    .step-line.done    { background: var(--light-bg); }
+    .step-line.pending { background: var(--disabled-bg); }
+
+    .step-label {
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: .01em;
+      color: var(--dark);
+      padding: 0 var(--xs);
+      margin-bottom: var(--xs);
+    }
+
+    /* ── CONTENT ─────────────────────────────── */
+    .content {
+      flex: 1;
+      padding: var(--xs);
+      overflow-y: auto;
+      padding-bottom: 200px; /* fallback; JS overrides per-screen */
+    }
+
+    /* ── INFOBOX ─────────────────────────────── */
+    .infobox {
+      border-radius: var(--r-card);
+      padding: var(--xs);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--xs);
+      margin-bottom: var(--s);
+    }
+    .infobox.green  { background: var(--light-bg);     color: var(--dark); }
+    .infobox.warn   { background: var(--warning-ib-bg); color: var(--warning-txt); }
+    .infobox.ok     { background: var(--success-bg);    color: var(--success-txt); }
+
+    .ib-icon { width: 24px; height: 24px; flex-shrink: 0; margin-top: 1px; }
+    .ib-text { font-size: 14px; line-height: 1.45; }
+
+    /* ── CARD ────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: var(--r-card);
+      border: 1px solid var(--border-light);
+      padding: var(--s);
+      margin-bottom: var(--s);
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--body-sec);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: var(--xs);
+    }
+
+    /* ── UPLOAD ZONE ─────────────────────────── */
+    .upload-zone {
+      border: 2px dashed var(--border-light);
+      border-radius: var(--r-card);
+      padding: var(--xl) var(--m);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all .2s;
+      margin-bottom: var(--s);
+      background: var(--page-bg);
+      user-select: none;
+    }
+    .upload-zone:active { background: var(--light-bg); border-color: var(--border); }
+    .upload-zone-icon { width: 48px; height: 48px; color: var(--body-sec); }
+    .upload-zone-text { font-size: 16px; font-weight: 500; color: var(--dark); text-align: center; }
+    .upload-zone-sub  { font-size: 13px; color: var(--body-sec); text-align: center; }
+
+    /* ── PHOTO GRID ──────────────────────────── */
+    .photo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--light-bg);
+      color: var(--dark);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: var(--xs);
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--xxs);
+      margin-bottom: var(--xs);
+    }
+    .photo-thumb {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      background: var(--border-light);
+    }
+    .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-thumb-rm {
+      position: absolute;
+      top: 5px; right: 5px;
+      width: 22px; height: 22px;
+      background: rgba(0,0,0,.55);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      font-size: 11px;
+      border: none;
+      line-height: 1;
+    }
+
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      color: var(--dark);
+      border: 1.5px solid var(--dark);
+      border-radius: var(--r-btn);
+      padding: 0 var(--s);
+      height: 44px;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .04em;
+    }
+
+    /* ── BUTTONS ─────────────────────────────── */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      line-height: 1;
+      transition: all .15s;
+      text-decoration: none;
+      white-space: nowrap;
+      width: 100%;
+      border-radius: var(--r-btn);
+      height: 56px;
+      padding: 0 var(--m);
+    }
+
+    .btn-p {
+      background: linear-gradient(63deg, #C4DE00 0%, #E1FF00 100%);
+      color: var(--dark);
+    }
+    .btn-p:hover  { background: #D3E642; color: var(--dark); box-shadow: none; }
+    .btn-p:active { background: #D3E642; color: var(--dark); box-shadow: none; }
+    .btn-p:disabled { background: var(--disabled-bg); color: var(--disabled-txt); box-shadow: none; cursor: not-allowed; }
+
+    .btn-s {
+      background: #F9FCE2;
+      color: var(--dark);
+      border: 1px solid #83A913;
+    }
+    .btn-s:hover  { border-width: 2px; }
+    .btn-s:active { border-width: 2px; }
+
+    .btn-t {
+      background: transparent;
+      color: var(--dark);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      border: none;
+      height: 44px;
+    }
+    .btn-t:hover { text-decoration: none; }
+
+    /* ── BOTTOM NAV ──────────────────────────── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 390px;
+      background: var(--white);
+      padding: var(--xs) var(--xs) calc(var(--xs) + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -2px 16px rgba(0,64,51,.08);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 10;
+    }
+    .nav-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-row .btn-t {
+      width: auto;
+      flex-shrink: 0;
+      height: 56px;
+      padding: 0 var(--xs);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .nav-row .btn-p,
+    .nav-row .btn-s {
+      flex: 1;
+    }
+
+    /* ── CHECKBOX ────────────────────────────── */
+    .cb-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--xs);
+      padding: var(--xs) 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cb-box {
+      width: 24px; height: 24px;
+      border-radius: 8px;
+      border: 1px solid #A3C40B;
+      background: #F9FCE2;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+      margin-top: 2px;
+    }
+    .cb-box svg { opacity: 0; transition: opacity .15s; }
+    .cb-row.checked .cb-box { border-color: var(--dark); border-width: 2px; }
+    .cb-row.checked .cb-box svg { opacity: 1; }
+    .cb-lbl { font-size: 16px; line-height: 1.4; color: var(--dark); flex: 1; }
+
+    /* ── TEXTAREA / INPUT ────────────────────── */
+    .field-wrap { margin-bottom: var(--s); }
+    .field-lbl {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--body-sec);
+      margin-bottom: 6px;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--border-light);
+      border-radius: var(--r-input);
+      padding: var(--xs);
+      font-family: var(--font);
+      font-size: 16px;
+      color: var(--dark);
+      outline: none;
+      background: var(--white);
+      transition: border .15s, box-shadow .15s;
+    }
+    textarea { resize: none; min-height: 96px; }
+    input[type="text"] { height: 56px; }
+    textarea:focus, input[type="text"]:focus {
+      border: 2px solid var(--border);
+      box-shadow: 0 0 0 3px rgba(0,107,85,.15);
+    }
+    textarea::placeholder, input::placeholder { color: var(--disabled-txt); }
+
+    /* ── DAMAGE LIST ─────────────────────────── */
+    .dmg-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--xs);
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .dmg-item:last-child { border-bottom: none; }
+    .dmg-icon { width: 24px; height: 24px; flex-shrink: 0; margin-top: 2px; }
+    .dmg-name { font-size: 16px; line-height: 1.3; color: var(--dark); }
+    .dmg-sub  { font-size: 13px; color: var(--body-sec); margin-top: 3px; }
+
+    /* ── PAYOUT LIST ─────────────────────────── */
+    .pay-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .pay-item:last-child { border-bottom: none; }
+    .pay-name   { font-size: 15px; color: var(--dark); flex: 1; padding-right: var(--xs); line-height: 1.3; }
+    .pay-sub    { font-size: 13px; color: var(--body-sec); margin-top: 3px; }
+    .pay-amount { font-size: 15px; font-weight: 600; color: var(--dark); white-space: nowrap; padding-top: 2px; }
+    .pay-amount.neg { color: var(--error); }
+
+    .pay-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--xs) 0 0;
+    }
+    .pay-total-lbl { font-size: 16px; font-weight: 700; }
+    .pay-total-amt { font-size: 22px; font-weight: 700; }
+
+    /* ── ACCOUNT BLOCK ───────────────────────── */
+    .account-block {
+      background: var(--page-bg);
+      border-radius: var(--r-card);
+      padding: var(--xs);
+      margin-bottom: var(--s);
+    }
+    .account-row   { display: flex; justify-content: space-between; align-items: center; }
+    .account-lbl   { font-size: 12px; color: var(--body-sec); margin-bottom: 3px; }
+    .account-num   { font-size: 18px; font-weight: 600; color: var(--dark); }
+    .btn-change {
+      font-size: 14px; font-weight: 600;
+      color: var(--dark);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      background: none; border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .btn-change:hover { text-decoration: none; }
+    .account-edit { display: none; margin-top: var(--xs); }
+    .account-edit.open { display: block; }
+
+    /* ── AI LOADING ──────────────────────────── */
+    .load-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--m);
+      padding: var(--xl);
+    }
+    .load-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--light-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.09); opacity: .8; }
+    }
+    .spinner {
+      width: 44px; height: 44px;
+      border: 4px solid var(--light-bg);
+      border-top-color: var(--dark);
+      border-radius: 50%;
+      animation: spin .85s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .load-title { font-size: 20px; font-weight: 500; text-align: center; }
+    .load-sub   { font-size: 14px; color: var(--body-sec); text-align: center; margin-top: 6px; }
+
+    /* ── SUCCESS ─────────────────────────────── */
+    .ok-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--xl) var(--xs) var(--xl);
+      gap: var(--s);
+    }
+    .ok-icon-wrap {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: var(--success-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+      animation: pop .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes pop {
+      from { transform: scale(.6); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    .ok-title { font-size: 24px; font-weight: 500; text-align: center; }
+    .ok-text  { font-size: 16px; line-height: 1.55; text-align: center; }
+    .ok-text.sec { color: var(--body-sec); }
+
+    /* ── SECTION TITLE ───────────────────────── */
+    .sec-ttl {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: var(--xs);
+      margin-top: var(--s);
+    }
+    .sec-ttl:first-child { margin-top: 0; }
+
+    /* ── DIVIDER ─────────────────────────────── */
+    .div { height: 1px; background: var(--border-light); margin: var(--xs) 0; }
+
+    /* ── DAMAGE ITEMS (read-only list) ──────── */
+    .dmg-view { display: flex; align-items: flex-start; gap: var(--xs); width: 100%; }
+    .dmg-edit-btn {
+      background: none; border: none; cursor: pointer;
+      padding: 4px; margin-left: auto; flex-shrink: 0;
+      color: var(--body-sec); border-radius: 8px;
+      transition: background .15s, color .15s;
+      margin-top: 1px;
+    }
+    .dmg-edit-btn:active { background: var(--page-bg); color: var(--dark); }
+    .btn-add-dmg {
+      display: flex; align-items: center; gap: 8px;
+      background: none; border: none; cursor: pointer;
+      color: var(--dark); font-family: var(--font);
+      font-size: 14px; font-weight: 600;
+      padding: var(--xs) 0 4px;
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .btn-add-dmg:active { text-decoration: none; }
+
+    /* ── BOTTOM SHEET ────────────────────────── */
+    .bs-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,64,51,.45);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .28s ease;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .bs-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .bs-sheet {
+      width: 100%; max-width: 390px;
+      background: var(--white);
+      border-radius: 28px 28px 0 0;
+      padding: 12px var(--xs) calc(var(--l) + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      gap: var(--xs);
+      transform: translateY(100%);
+      transition: transform .32s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -4px 32px rgba(0,64,51,.15);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .bs-overlay.open .bs-sheet {
+      transform: translateY(0);
+    }
+    .bs-handle {
+      width: 36px; height: 4px;
+      background: var(--border-light);
+      border-radius: 2px;
+      align-self: center;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+    }
+    .bs-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--xxs);
+    }
+    .bs-title {
+      font-size: 18px; font-weight: 600;
+      color: var(--dark);
+    }
+    .bs-close {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--page-bg); border: none;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dark); cursor: pointer; flex-shrink: 0;
+    }
+    .bs-close:active { background: var(--disabled-bg); }
+    .info-body { font-size: 15px; line-height: 1.55; color: var(--dark); display: flex; flex-direction: column; gap: var(--xs); }
+    .info-body p { margin: 0; }
+    .info-body strong { color: var(--dark); }
+    .btn-why {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 13px; font-weight: 500; color: var(--border);
+      background: none; border: none; padding: 4px 0; cursor: pointer;
+      text-decoration: underline; text-underline-offset: 2px;
+    }
+    .bs-fields { display: flex; flex-direction: column; gap: 6px; }
+    .bs-fields .ds-input.error { border-color: var(--error); background: var(--error-bg); }
+    .bs-fields .ds-input.error .ds-lbl { color: var(--error); }
+    .bs-err-msg { font-size: 12px; font-weight: 500; color: var(--error); padding: 0 4px; margin-top: -2px; }
+    @keyframes bs-shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+    .bs-fields .ds-input.shake { animation: bs-shake .35s ease; }
+
+    /* ── LIQUIDÁTOR INLINE BLOCK ─────────────── */
+    .liq-block {
+      border: 1px solid var(--border-light);
+      border-radius: var(--r-card);
+      overflow: hidden;
+      margin-bottom: var(--s);
+    }
+    .liq-trigger {
+      display: flex;
+      align-items: center;
+      gap: var(--xs);
+      padding: var(--xs);
+      cursor: pointer;
+      user-select: none;
+      background: var(--white);
+      transition: background .15s;
+    }
+    .liq-trigger:active { background: var(--page-bg); }
+    .liq-ico {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--light-bg);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .liq-texts { flex: 1; }
+    .liq-title { font-size: 15px; font-weight: 600; color: var(--dark); line-height: 1.3; }
+    .liq-sub   { font-size: 13px; color: var(--body-sec); margin-top: 3px; line-height: 1.35; }
+    .liq-chevron {
+      width: 20px; height: 20px;
+      color: var(--body-sec);
+      flex-shrink: 0;
+      transition: transform .2s;
+    }
+    .liq-block.open .liq-chevron { transform: rotate(180deg); }
+    .liq-expand {
+      display: none;
+      padding: var(--xs);
+      background: var(--page-bg);
+      border-top: 1px solid var(--border-light);
+      flex-direction: column;
+      gap: var(--xs);
+    }
+    .liq-block.open .liq-expand { display: flex; }
+    .liq-phone-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--xxs);
+    }
+    .liq-phone-lbl { font-size: 12px; color: var(--body-sec); margin-bottom: 2px; }
+    .liq-phone-num { font-size: 17px; font-weight: 600; color: var(--dark); }
+    .liq-called {
+      display: none;
+      align-items: center;
+      gap: var(--xs);
+      padding: var(--xxs) 0;
+    }
+    .liq-called.visible { display: flex; }
+    .liq-called-ico {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--success-bg); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .liq-called-txt { font-size: 14px; color: var(--dark); line-height: 1.35; }
+
+    /* ── DATE/TIME FIELDS ────────────────────── */
+    .field-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--xxs);
+      margin-bottom: var(--xxs);
+    }
+    /* DS floating label input */
+    .ds-input {
+      height: 56px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--r-input);
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8px var(--xs);
+      gap: 2px;
+      transition: border .15s, box-shadow .15s, background .15s;
+      cursor: text;
+    }
+    .ds-input:focus-within {
+      border: 2px solid var(--border);
+      background: #D1F3E7;
+      box-shadow: 0 2px 8px rgba(0,64,51,.12);
+    }
+    .ds-input .ds-lbl {
+      font-size: 12px;
+      font-weight: 500;
+      color: #006B55;
+      line-height: 1.2;
+      pointer-events: none;
+    }
+    .ds-input input {
+      height: auto;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--dark);
+      background: transparent !important;
+      outline: none !important;
+      box-shadow: none !important;
+      line-height: 1.3;
+      width: 100%;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: .45;
+      cursor: pointer;
+      margin-left: -2px;
+    }
+    .helper-text {
+      font-size: 12px;
+      color: var(--body-sec);
+      line-height: 1.45;
+      margin-bottom: var(--s);
+      padding: 0 2px;
+    }
+
+
+    /* ── FILE INPUTS ─────────────────────────── */
+    .file-hidden { display: none; }
+
+  </style>
+</head>
+<body>
+<div class="app">
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 1 — Foto škody                   ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen active" id="screen-foto">
+  <div class="header">
+    <p class="product-name">Majetkové pojištění</p>
+    <div class="stepper">
+      <div class="step"><div class="step-circle current">1</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">2</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">3</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">4</div></div>
+    </div>
+    <h2 class="step-label">Přidejte foto škody</h2>
+  </div>
+
+  <div class="content">
+    <div class="infobox green">
+      <svg class="ib-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 8v4m0 4h.01" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="ib-text">Vyfoťte poškozené místo co nejzřetelněji — čím lepší foto, tím přesnější odhad škody.</span>
+    </div>
+
+    <!-- Empty state -->
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('fi-first').click()">
+      <svg class="upload-zone-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="4" y="10" width="40" height="30" rx="6"/>
+        <circle cx="24" cy="26" r="8"/>
+        <path d="M16 10l3.5-6h9l3.5 6" stroke-linecap="round"/>
+        <circle cx="38" cy="17" r="2.5" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="upload-zone-text">Pořídit nebo nahrát fotku</span>
+      <span class="upload-zone-sub">JPG, PNG, HEIC</span>
+    </div>
+
+    <!-- After upload -->
+    <div id="photo-section" style="display:none">
+      <div class="photo-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="3" y="6" width="18" height="13" rx="3"/>
+          <circle cx="12" cy="12.5" r="3.5"/>
+        </svg>
+        <span id="photo-count-lbl">1 foto</span>
+      </div>
+      <div class="photo-grid" id="photo-grid"></div>
+      <button class="btn-add" onclick="document.getElementById('fi-more').click()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+        </svg>
+        Přidat další fotku
+      </button>
+    </div>
+  </div>
+
+  <input type="file" id="fi-first" class="file-hidden" accept="image/*" capture="environment" onchange="handlePhotos(this)">
+  <input type="file" id="fi-more"  class="file-hidden" accept="image/*" capture="environment" onchange="handlePhotos(this)">
+
+  <div class="bottom-nav">
+    <button class="btn btn-p" id="btn-foto-ok" disabled onclick="startAI()">Pokračovat</button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 2 — AI zpracování                ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen" id="screen-loading">
+  <div class="load-center">
+    <div class="load-icon">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#004033" stroke-width="1.5">
+        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="spinner"></div>
+    <div>
+      <p class="load-title">Analyzujeme poškození…</p>
+      <p class="load-sub">Chvilku strpení, AI prochází vaše foto.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 3 — AI výsledky                  ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen" id="screen-ai">
+  <div class="header">
+    <p class="product-name">Majetkové pojištění</p>
+    <div class="stepper">
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">2</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">3</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">4</div></div>
+    </div>
+    <h2 class="step-label">Nalezená poškození</h2>
+  </div>
+
+  <div class="content">
+    <div class="infobox green">
+      <svg class="ib-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round"/>
+      </svg>
+      <span class="ib-text">AI analýza dokončena. Zkontrolujte, zda výsledky odpovídají skutečnosti, a případně doplňte detaily.</span>
+    </div>
+
+    <div class="card" style="padding-bottom: var(--xs)">
+      <p class="card-title">Co jsme našli na fotce</p>
+
+      <div id="dmg-list">
+        <div class="dmg-item" id="dmg-0" data-covered="yes">
+          <div class="dmg-view">
+            <svg class="dmg-icon" viewBox="0 0 24 24" fill="none" stroke="#668C85" stroke-width="1.5">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+            <div class="dmg-texts" style="flex:1">
+              <p class="dmg-name">Rozbité okno</p>
+              <p class="dmg-sub">Přední fasáda, 1. patro</p>
+            </div>
+            <button class="dmg-edit-btn" onclick="openDmgSheet('dmg-0')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="dmg-item" id="dmg-1" data-covered="yes">
+          <div class="dmg-view">
+            <svg class="dmg-icon" viewBox="0 0 24 24" fill="none" stroke="#668C85" stroke-width="1.5">
+              <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z"/>
+              <path d="M9 21V12h6v9"/>
+            </svg>
+            <div class="dmg-texts" style="flex:1">
+              <p class="dmg-name">Poškozená střecha</p>
+              <p class="dmg-sub">Levá strana, odhadovaná plocha 3 m²</p>
+            </div>
+            <button class="dmg-edit-btn" onclick="openDmgSheet('dmg-1')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="dmg-item" id="dmg-2" data-covered="no">
+          <div class="dmg-view">
+            <svg class="dmg-icon" viewBox="0 0 24 24" fill="none" stroke="#668C85" stroke-width="1.5">
+              <path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-linecap="round"/>
+            </svg>
+            <div class="dmg-texts" style="flex:1">
+              <p class="dmg-name">Popraskané zdi</p>
+              <p class="dmg-sub">Interiér, viditelné trhliny</p>
+            </div>
+            <button class="dmg-edit-btn" onclick="openDmgSheet('dmg-2')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-add-dmg" onclick="openDmgSheet(null)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+        </svg>
+        Přidat poškození
+      </button>
+    </div>
+
+    <div class="card">
+      <p class="card-title">Kdy k události došlo</p>
+      <div class="field-pair">
+        <label class="ds-input">
+          <span class="ds-lbl">Datum <span style="color:var(--error)">*</span></span>
+          <input type="date" id="incident-date" oninput="validateAiStep()">
+        </label>
+        <label class="ds-input">
+          <span class="ds-lbl">Přibližný čas <span style="color:var(--error)">*</span></span>
+          <input type="text" id="incident-time" placeholder="večer, 18:00…" oninput="validateAiStep()">
+        </label>
+      </div>
+      <p class="helper-text" style="margin-bottom:0">Stačí přibližný čas — „odpoledne" nebo „kolem 20:00" je v pořádku.</p>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-row">
+      <button class="btn btn-t" onclick="showScreen('screen-foto')">Zpět</button>
+      <button class="btn btn-p" id="btn-ai-ok" disabled onclick="showScreen('screen-narok')">Potvrdit a pokračovat</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 4 — Nárok na krytí               ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen" id="screen-narok">
+  <div class="header">
+    <p class="product-name">Majetkové pojištění</p>
+    <div class="stepper">
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">3</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">4</div></div>
+    </div>
+    <h2 class="step-label">Váš nárok na krytí</h2>
+  </div>
+
+  <div class="content">
+    <div id="narok-covered-wrap">
+      <p class="sec-ttl">Kryté škody</p>
+      <div class="card" id="narok-covered"></div>
+    </div>
+
+    <div id="narok-uncovered-wrap">
+      <p class="sec-ttl">Nekryté škody</p>
+      <div class="card" id="narok-uncovered"></div>
+    </div>
+
+    <div id="narok-pending-wrap" style="display:none">
+      <p class="sec-ttl">Čeká na posouzení</p>
+      <div class="card" id="narok-pending"></div>
+    </div>
+
+    <div class="liq-block" id="liq-4">
+      <div class="liq-trigger" onclick="toggleLiq('liq-4')">
+        <div class="liq-ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#004033" stroke-width="1.8">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.04 1.22 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="liq-texts">
+          <p class="liq-title">Nejste si jistí nárokem?</p>
+          <p class="liq-sub">Likvidátor vám podmínky vysvětlí.</p>
+        </div>
+        <svg class="liq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="liq-expand" id="liq-4-expand">
+        <div class="liq-phone-row">
+          <div>
+            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
+            <p class="liq-phone-num">601 601 601</p>
+          </div>
+          <button class="btn btn-p" style="width:auto;padding:0 var(--s);height:44px;font-size:14px" onclick="requestCallback('liq-4')">Zavolejte mi</button>
+        </div>
+        <div class="liq-called" id="liq-4-called">
+          <div class="liq-called-ico">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l5 5 9-10"/>
+            </svg>
+          </div>
+          <p class="liq-called-txt">Likvidátor se vám ozve do <strong>5 minut</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-wrap">
+      <label class="field-lbl">Máte další informace k případu? (volitelné)</label>
+      <textarea placeholder="Doplňte cokoliv, co by mohlo ovlivnit posouzení…" rows="3"></textarea>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-row">
+      <button class="btn btn-t" onclick="showScreen('screen-ai')">Zpět</button>
+      <button class="btn btn-p" onclick="showScreen('screen-plneni')">Pokračovat</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 5 — Návrh plnění                 ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen" id="screen-plneni">
+  <div class="header">
+    <p class="product-name">Majetkové pojištění</p>
+    <div class="stepper">
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">4</div></div>
+    </div>
+    <h2 class="step-label">Návrh plnění</h2>
+  </div>
+
+  <div class="content">
+    <div class="card">
+      <p class="card-title">Rozpis plnění</p>
+
+      <div class="pay-item">
+        <div>
+          <p class="pay-name">Rozbité okno — výměna skla</p>
+          <p class="pay-sub">Materiál + práce</p>
+        </div>
+        <span class="pay-amount">8 400 Kč</span>
+      </div>
+
+      <div class="pay-item">
+        <div>
+          <p class="pay-name">Poškozená střecha — oprava</p>
+          <p class="pay-sub">Plocha cca 3 m²</p>
+        </div>
+        <span class="pay-amount">22 500 Kč</span>
+      </div>
+
+      <div class="pay-item">
+        <div>
+          <p class="pay-name">Spoluúčast</p>
+          <p class="pay-sub">Dle podmínek pojistky</p>
+        </div>
+        <span class="pay-amount neg">−2 000 Kč</span>
+      </div>
+
+      <div class="div" style="margin-bottom:0"></div>
+      <div class="pay-total">
+        <span class="pay-total-lbl">Celkem k vyplacení</span>
+        <span class="pay-total-amt" id="pay-total-amt">28 900 Kč</span>
+      </div>
+    </div>
+
+    <div class="liq-block" id="liq-5">
+      <div class="liq-trigger" onclick="toggleLiq('liq-5')">
+        <div class="liq-ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#004033" stroke-width="1.8">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.04 1.22 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="liq-texts">
+          <p class="liq-title">Nerozumíte výši plnění?</p>
+          <p class="liq-sub">Likvidátor vám rozpis vysvětlí.</p>
+        </div>
+        <svg class="liq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="liq-expand" id="liq-5-expand">
+        <div class="liq-phone-row">
+          <div>
+            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
+            <p class="liq-phone-num">601 601 601</p>
+          </div>
+          <button class="btn btn-p" style="width:auto;padding:0 var(--s);height:44px;font-size:14px" onclick="requestCallback('liq-5')">Zavolejte mi</button>
+        </div>
+        <div class="liq-called" id="liq-5-called">
+          <div class="liq-called-ico">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12l5 5 9-10"/>
+            </svg>
+          </div>
+          <p class="liq-called-txt">Likvidátor se vám ozve do <strong>5 minut</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="sec-ttl" style="margin-top:0">Platební účet</p>
+    <div class="account-block">
+      <div class="account-row">
+        <div>
+          <p class="account-lbl">Číslo účtu</p>
+          <p class="account-num" id="account-display">123456789/0300</p>
+        </div>
+        <button class="btn-change" onclick="toggleAccountEdit()">Změnit</button>
+      </div>
+      <div class="account-edit" id="account-edit">
+        <div class="field-wrap" style="margin-top:var(--xs);margin-bottom:var(--xxs)">
+          <label class="field-lbl">Nové číslo účtu</label>
+          <input type="text" id="account-input" placeholder="123456789/0300">
+        </div>
+        <button class="btn btn-s" style="height:44px;font-size:13px" onclick="saveAccount()">Uložit</button>
+      </div>
+    </div>
+
+    <div class="infobox green">
+      <svg class="ib-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="2" y="5" width="20" height="14" rx="3"/>
+        <path d="M2 10h20" stroke-linecap="round"/>
+      </svg>
+      <span class="ib-text">Platbu odešleme okamžitě — pokud vaše banka podporuje okamžité platby, budou peníze na účtu během minut.</span>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-row">
+      <button class="btn btn-t" onclick="showScreen('screen-narok')">Zpět</button>
+      <button class="btn btn-p" onclick="submitClaim()">Souhlasím s návrhem plnění</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 6 — Success                      ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen" id="screen-ok">
+  <div class="ok-center">
+    <div class="ok-icon-wrap">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12l5 5 9-10" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <h2 class="ok-title">Peníze jsou na cestě</h2>
+
+    <p class="ok-text">Odeslali jsme <strong id="ok-amount">28 900 Kč</strong> na účet <strong id="ok-account">123456789/0300</strong> jako okamžitou platbu — pokud ji vaše banka podporuje, peníze jsou už na účtu.</p>
+
+    <p class="ok-text sec">Potvrzení jsme odeslali na váš e-mail.</p>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn btn-s" disabled style="opacity:.45;cursor:default">Zpět na přehled pojistek</button>
+  </div>
+</div>
+
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  BOTTOM SHEET — Edit / Add damage        ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="bs-overlay" id="bs-overlay" onclick="closeDmgSheet(event)">
+  <div class="bs-sheet">
+    <div class="bs-header">
+      <h3 class="bs-title" id="bs-title">Přidat poškození</h3>
+      <button class="bs-close" onclick="closeDmgSheet()" aria-label="Zavřít">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="bs-fields" id="bs-fields"></div>
+    <button class="btn btn-p" id="bs-confirm" onclick="confirmDmgSheet()">Přidat</button>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  BOTTOM SHEET — Info (why not covered)   ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="bs-overlay" id="info-overlay" onclick="closeInfoSheet(event)">
+  <div class="bs-sheet">
+    <div class="bs-header">
+      <h3 class="bs-title" id="info-title">Proč tato škoda není kryta?</h3>
+      <button class="bs-close" onclick="closeInfoSheet()" aria-label="Zavřít">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div id="info-body" class="info-body"></div>
+  </div>
+</div>
+
+</div><!-- /.app -->
+
+<script>
+  // ── Navigation ───────────────────────────────────
+  function adjustContentPadding(screenEl) {
+    const nav = screenEl.querySelector('.bottom-nav');
+    const content = screenEl.querySelector('.content');
+    if (!nav || !content) return;
+    const navH = nav.getBoundingClientRect().height;
+    content.style.paddingBottom = (navH + 16) + 'px';
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    window.scrollTo(0, 0);
+    if (id === 'screen-narok') buildNarok();
+    requestAnimationFrame(() => adjustContentPadding(el));
+  }
+
+  const CHECK_SVG = `<svg class="dmg-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#E8F9E4"/><path d="M7.5 12l3.5 3.5 6-7" stroke="#165315" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const CROSS_SVG = `<svg class="dmg-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FDECEA"/><path d="M9 9l6 6M15 9l-6 6" stroke="#D02B1D" stroke-width="2" stroke-linecap="round"/></svg>`;
+  const CLOCK_SVG = `<svg class="dmg-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#FFF3E0"/><circle cx="12" cy="12" r="4" stroke="#CE6E00" stroke-width="2"/><path d="M12 10v2.5l1.5 1.5" stroke="#CE6E00" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+
+  // ── Info sheet (why not covered) ─────────────────
+  function openInfoSheet(name) {
+    document.getElementById('info-title').textContent = name;
+    document.getElementById('info-body').innerHTML = `
+      <p>Pojistka kryje <strong>náhlá a neočekávaná poškození</strong> způsobená živelní událostí — bouřkou, povodní, pádem stromu nebo požárem.</p>
+      <p><strong>${name}</strong> je typicky způsobeno <strong>postupným opotřebením nebo vadou konstrukce</strong>, která nesouvisí s pojistnou událostí. Takové škody do rozsahu pojistky nespadají.</p>
+      <p>Pokud si myslíte, že škoda vznikla v důsledku pojistné události, zavolejte likvidátorovi — situaci posoudí individuálně.</p>`;
+    document.getElementById('info-overlay').classList.add('open');
+  }
+
+  function closeInfoSheet(e) {
+    if (e instanceof MouseEvent && e.target !== document.getElementById('info-overlay')) return;
+    document.getElementById('info-overlay').classList.remove('open');
+  }
+
+  function buildNarok() {
+    const items = Array.from(document.querySelectorAll('#dmg-list .dmg-item'));
+    const covered   = items.filter(i => i.dataset.covered === 'yes');
+    const uncovered = items.filter(i => i.dataset.covered === 'no');
+    const pending   = items.filter(i => !i.dataset.covered);
+
+    function renderItem(item, icon, sub, last, why) {
+      const name = item.querySelector('.dmg-name').textContent;
+      const userSub = item.querySelector('.dmg-sub').textContent.trim();
+      const subText = userSub || sub;
+      const whyBtn = why ? `<button class="btn-why" onclick='openInfoSheet(${JSON.stringify(name)})'>Chci vědět více</button>` : '';
+      return `<div class="dmg-item"${last && !why ? ' style="border-bottom:none"' : ''}>
+        ${icon}
+        <div style="flex:1"><p class="dmg-name">${name}</p><p class="dmg-sub">${subText}</p>${whyBtn}</div>
+      </div>`;
+    }
+
+    const covEl  = document.getElementById('narok-covered');
+    const uncEl  = document.getElementById('narok-uncovered');
+    const penEl  = document.getElementById('narok-pending');
+
+    covEl.innerHTML = covered.map((it, i) =>
+      renderItem(it, CHECK_SVG, 'Živelní škoda — součást pojistky', i === covered.length - 1)
+    ).join('');
+
+    const uncItems = uncovered.map((it, i) => renderItem(it, CROSS_SVG, 'Opotřebení — mimo rozsah pojistky', i === uncovered.length - 1, true)).join('');
+    uncEl.innerHTML = uncItems;
+
+    penEl.innerHTML = pending.map((it, i) =>
+      renderItem(it, CLOCK_SVG, 'Ručně přidáno — čeká na posouzení', i === pending.length - 1)
+    ).join('');
+
+    document.getElementById('narok-covered-wrap').style.display  = covered.length  ? '' : 'none';
+    document.getElementById('narok-uncovered-wrap').style.display = uncovered.length ? '' : 'none';
+    document.getElementById('narok-pending-wrap').style.display   = pending.length  ? '' : 'none';
+  }
+
+  // ── Photos ───────────────────────────────────────
+  const photos = [];
+
+  function handlePhotos(input) {
+    const files = Array.from(input.files);
+    if (!files.length) return;
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => { photos.push(e.target.result); renderPhotos(); };
+      reader.readAsDataURL(file);
+    });
+    input.value = '';
+  }
+
+  function renderPhotos() {
+    const grid    = document.getElementById('photo-grid');
+    const section = document.getElementById('photo-section');
+    const zone    = document.getElementById('upload-zone');
+    const btn     = document.getElementById('btn-foto-ok');
+    const lbl     = document.getElementById('photo-count-lbl');
+
+    if (photos.length > 0) {
+      section.style.display = 'block';
+      zone.style.display = 'none';
+    } else {
+      section.style.display = 'none';
+      zone.style.display = 'flex';
+    }
+
+    lbl.textContent = photos.length + (photos.length === 1 ? ' foto' : ' fotky');
+
+    grid.innerHTML = '';
+    photos.forEach((src, i) => {
+      const div = document.createElement('div');
+      div.className = 'photo-thumb';
+      div.innerHTML = `<img src="${src}" alt=""><button class="photo-thumb-rm" onclick="removePhoto(${i})">✕</button>`;
+      grid.appendChild(div);
+    });
+
+    btn.disabled = photos.length === 0;
+  }
+
+  function removePhoto(i) {
+    photos.splice(i, 1);
+    renderPhotos();
+  }
+
+  // ── AI mock ──────────────────────────────────────
+  function startAI() {
+    showScreen('screen-loading');
+    setTimeout(() => showScreen('screen-ai'), 2800);
+  }
+
+  // ── AI step validation ────────────────────────────
+  function validateAiStep() {
+    const dated = !!document.getElementById('incident-date').value;
+    const timed = !!document.getElementById('incident-time').value.trim();
+    document.getElementById('btn-ai-ok').disabled = !(dated && timed);
+  }
+
+  // ── Damage bottom sheet ──────────────────────────
+  const PENCIL_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round"/></svg>`;
+  let dmgCount = 3;
+  let currentDmgId = null;
+
+  function openDmgSheet(id) {
+    currentDmgId = id;
+    const title   = document.getElementById('bs-title');
+    const fields  = document.getElementById('bs-fields');
+    const confirm = document.getElementById('bs-confirm');
+    if (id) {
+      const item = document.getElementById(id);
+      const name = item.querySelector('.dmg-name').textContent;
+      const sub  = item.querySelector('.dmg-sub').textContent;
+      title.textContent   = 'Upravit poškození';
+      confirm.textContent = 'Uložit změny';
+      fields.innerHTML = `
+        <label class="ds-input">
+          <span class="ds-lbl">Název poškození *</span>
+          <input type="text" id="bs-name" value="${name}">
+        </label>
+        <label class="ds-input">
+          <span class="ds-lbl">Upřesnění (volitelné)</span>
+          <input type="text" id="bs-sub" value="${sub}" placeholder="lokalita, rozsah…">
+        </label>`;
+    } else {
+      title.textContent   = 'Přidat poškození';
+      confirm.textContent = 'Přidat';
+      fields.innerHTML = `
+        <label class="ds-input">
+          <span class="ds-lbl">Popis poškození *</span>
+          <input type="text" id="bs-name" placeholder="např. prasklé potrubí ve sklepě">
+        </label>`;
+    }
+    document.getElementById('bs-overlay').classList.add('open');
+    document.getElementById('bs-name').focus();
+  }
+
+  function closeDmgSheet(e) {
+    if (e instanceof MouseEvent && e.target !== document.getElementById('bs-overlay')) return;
+    document.getElementById('bs-overlay').classList.remove('open');
+    currentDmgId = null;
+  }
+
+
+  function confirmDmgSheet() {
+    const nameInput = document.getElementById('bs-name');
+    const val = nameInput.value.trim();
+    if (!val) {
+      const wrap = nameInput.closest('.ds-input');
+      wrap.classList.remove('shake');
+      wrap.classList.add('error');
+      void wrap.offsetWidth; // reflow → restart animation
+      wrap.classList.add('shake');
+      if (!wrap.nextElementSibling?.classList.contains('bs-err-msg')) {
+        const msg = document.createElement('p');
+        msg.className = 'bs-err-msg';
+        msg.textContent = 'Vyplňte název poškození';
+        wrap.after(msg);
+      }
+      nameInput.focus();
+      return;
+    }
+    nameInput.closest('.ds-input')?.classList.remove('error', 'shake');
+    nameInput.closest('.ds-input')?.nextElementSibling?.classList.contains('bs-err-msg') &&
+      nameInput.closest('.ds-input').nextElementSibling.remove();
+    if (currentDmgId) {
+      const item   = document.getElementById(currentDmgId);
+      const subEl  = document.getElementById('bs-sub');
+      const subVal = subEl ? subEl.value.trim() : '';
+      item.querySelector('.dmg-name').textContent = val;
+      const subP = item.querySelector('.dmg-sub');
+      subP.textContent   = subVal;
+      subP.style.display = subVal ? '' : 'none';
+    } else {
+      const id  = 'dmg-' + dmgCount++;
+      const div = document.createElement('div');
+      div.className = 'dmg-item';
+      div.dataset.covered = 'yes';
+      div.id = id;
+      div.innerHTML = `
+        <div class="dmg-view">
+          <svg class="dmg-icon" viewBox="0 0 24 24" fill="none" stroke="#668C85" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01" stroke-linecap="round"/>
+          </svg>
+          <div class="dmg-texts" style="flex:1">
+            <p class="dmg-name">${val}</p>
+            <p class="dmg-sub" style="display:none"></p>
+          </div>
+          <button class="dmg-edit-btn" onclick="openDmgSheet('${id}')">${PENCIL_SVG}</button>
+        </div>`;
+      document.getElementById('dmg-list').appendChild(div);
+    }
+    document.getElementById('bs-overlay').classList.remove('open');
+    currentDmgId = null;
+  }
+
+  // ── Account ──────────────────────────────────────
+  function toggleAccountEdit() {
+    document.getElementById('account-edit').classList.toggle('open');
+  }
+
+  function saveAccount() {
+    const val = document.getElementById('account-input').value.trim();
+    if (val) document.getElementById('account-display').textContent = val;
+    document.getElementById('account-edit').classList.remove('open');
+  }
+
+  // ── Submit ───────────────────────────────────────
+  function submitClaim() {
+    const acc   = document.getElementById('account-display').textContent;
+    const total = document.getElementById('pay-total-amt').textContent;
+    document.getElementById('ok-account').textContent = acc;
+    document.getElementById('ok-amount').textContent  = total;
+    showScreen('screen-ok');
+  }
+
+  // ── Bottom sheet keyboard handling ───────────────
+  if (window.visualViewport) {
+    const onVP = () => {
+      const offset = Math.max(0, window.innerHeight - window.visualViewport.offsetTop - window.visualViewport.height);
+      ['bs-overlay', 'info-overlay'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el.classList.contains('open')) el.style.bottom = offset + 'px';
+      });
+    };
+    window.visualViewport.addEventListener('resize', onVP);
+    window.visualViewport.addEventListener('scroll', onVP);
+
+    ['bs-overlay', 'info-overlay'].forEach(id => {
+      document.getElementById(id).addEventListener('transitionend', () => {
+        if (!document.getElementById(id).classList.contains('open'))
+          document.getElementById(id).style.bottom = '';
+      });
+    });
+  }
+
+  // ── Init ─────────────────────────────────────────
+  window.addEventListener('load', () => {
+    const first = document.querySelector('.screen.active');
+    if (first) requestAnimationFrame(() => adjustContentPadding(first));
+    // date intentionally empty — user must choose consciously
+  });
+
+  // ── Likvidátor inline expand ──────────────────────
+  function requestCallback(id) {
+    const called = document.getElementById(id + '-called');
+    const btn = called.previousElementSibling.querySelector('button');
+    called.classList.add('visible');
+    btn.disabled = true;
+    btn.textContent = 'Objednáno';
+  }
+
+  function toggleLiq(id) {
+    document.getElementById(id).classList.toggle('open');
+    const screen = document.getElementById(id).closest('.screen');
+    requestAnimationFrame(() => adjustContentPadding(screen));
+  }
+</script>
+</body>
+</html>
