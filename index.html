@@ -873,7 +873,7 @@
 
     <div class="field-pair" style="margin-bottom:var(--xxs)">
       <label class="ds-input">
-        <span class="ds-lbl">Datum  *</span>
+        <span class="ds-lbl">Vyberte datum  *</span>
         <input type="date" id="incident-date" oninput="validateUdalost()">
       </label>
       <label class="ds-input">
@@ -1028,51 +1028,14 @@
         <div class="dmg-item" id="dmg-0" data-covered="yes">
           <div class="dmg-view">
             <svg class="dmg-icon" viewBox="0 0 24 24" fill="none" stroke="#668C85" stroke-width="1.5">
-              <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
-              <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="2" y="6" width="20" height="12" rx="2"/>
+              <path d="M6 10h.01M10 10h4M18 10h.01M6 14h12" stroke-linecap="round"/>
             </svg>
             <div class="dmg-texts" style="flex:1">
-              <p class="dmg-name">Rozbité okno</p>
-              <p class="dmg-sub">Přední fasáda, 1. patro</p>
+              <p class="dmg-name">Sklokeramická deska</p>
+              <p class="dmg-sub">Prasklá deska, varná zóna č. 2</p>
             </div>
             <button class="dmg-edit-btn" onclick="openDmgSheet('dmg-0')">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round"/>
-                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="dmg-item" id="dmg-1" data-covered="yes">
-          <div class="dmg-view">
-            <svg class="dmg-icon" viewBox="0 0 24 24" fill="none" stroke="#668C85" stroke-width="1.5">
-              <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z"/>
-              <path d="M9 21V12h6v9"/>
-            </svg>
-            <div class="dmg-texts" style="flex:1">
-              <p class="dmg-name">Poškozená střecha</p>
-              <p class="dmg-sub">Levá strana, odhadovaná plocha 3 m²</p>
-            </div>
-            <button class="dmg-edit-btn" onclick="openDmgSheet('dmg-1')">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round"/>
-                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="dmg-item" id="dmg-2" data-covered="no">
-          <div class="dmg-view">
-            <svg class="dmg-icon" viewBox="0 0 24 24" fill="none" stroke="#668C85" stroke-width="1.5">
-              <path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-linecap="round"/>
-            </svg>
-            <div class="dmg-texts" style="flex:1">
-              <p class="dmg-name">Popraskané zdi</p>
-              <p class="dmg-sub">Interiér, viditelné trhliny</p>
-            </div>
-            <button class="dmg-edit-btn" onclick="openDmgSheet('dmg-2')">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke-linecap="round"/>
                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round"/>
@@ -1212,18 +1175,10 @@
 
       <div class="pay-item">
         <div>
-          <p class="pay-name">Rozbité okno — výměna skla</p>
-          <p class="pay-sub">Materiál + práce</p>
+          <p class="pay-name">Sklokeramická deska — výměna</p>
+          <p class="pay-sub">Prasklá deska, varná zóna č. 2</p>
         </div>
-        <span class="pay-amount">8 400 Kč</span>
-      </div>
-
-      <div class="pay-item">
-        <div>
-          <p class="pay-name">Poškozená střecha — oprava</p>
-          <p class="pay-sub">Plocha cca 3 m²</p>
-        </div>
-        <span class="pay-amount">22 500 Kč</span>
+        <span class="pay-amount">12 400 Kč</span>
       </div>
 
       <div class="pay-item">
@@ -1237,7 +1192,7 @@
       <div class="div" style="margin-bottom:0"></div>
       <div class="pay-total">
         <span class="pay-total-lbl">Celkem k vyplacení</span>
-        <span class="pay-total-amt" id="pay-total-amt">28 900 Kč</span>
+        <span class="pay-total-amt" id="pay-total-amt">10 400 Kč</span>
       </div>
     </div>
 
@@ -1329,7 +1284,7 @@
 
     <p class="ok-text sec">Potvrzení jsme odeslali na váš e-mail.</p>
 
-    <div class="rating-block">
+    <div class="rating-block" id="rating-block">
       <p class="rating-lbl">Jak se vám hlášení vyřizovalo?</p>
       <div class="rating-stars" id="rating-stars">
         <button class="star active" onclick="setRating(1)">★</button>
@@ -1338,6 +1293,8 @@
         <button class="star active" onclick="setRating(4)">★</button>
         <button class="star active" onclick="setRating(5)">★</button>
       </div>
+      <button class="btn btn-s" id="btn-rating" style="margin-top:4px;width:auto;padding:0 var(--m);height:44px;font-size:14px" onclick="submitRating()">Odeslat hodnocení</button>
+      <p id="rating-done" style="display:none;font-size:14px;color:var(--body-sec);text-align:center">Děkujeme za hodnocení ✓</p>
     </div>
   </div>
 
@@ -1540,10 +1497,19 @@
     document.getElementById('btn-ai-ok').disabled = !hasItems;
   }
 
+  let currentRating = 5;
+
   function setRating(n) {
+    currentRating = n;
     document.querySelectorAll('.star').forEach((s, i) => {
       s.classList.toggle('active', i < n);
     });
+  }
+
+  function submitRating() {
+    document.getElementById('btn-rating').style.display = 'none';
+    document.getElementById('rating-stars').querySelectorAll('.star').forEach(s => s.disabled = true);
+    document.getElementById('rating-done').style.display = 'block';
   }
 
   // ── Damage bottom sheet ──────────────────────────
@@ -1624,7 +1590,7 @@
       const id  = 'dmg-' + dmgCount++;
       const div = document.createElement('div');
       div.className = 'dmg-item';
-      div.dataset.covered = 'yes';
+      div.dataset.covered = 'no';
       div.id = id;
       div.innerHTML = `
         <div class="dmg-view">
