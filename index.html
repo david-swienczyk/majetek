@@ -383,7 +383,6 @@
       transition: border .15s, box-shadow .15s;
     }
     textarea { resize: none; min-height: 96px; }
-    input[type="text"] { height: 56px; }
     textarea:focus, input[type="text"]:focus {
       border: 2px solid var(--border);
       box-shadow: 0 0 0 3px rgba(0,107,85,.15);
@@ -511,6 +510,24 @@
     .ok-title { font-size: 24px; font-weight: 500; text-align: center; }
     .ok-text  { font-size: 16px; line-height: 1.55; text-align: center; }
     .ok-text.sec { color: var(--body-sec); }
+
+    /* ── RATING ──────────────────────────────── */
+    .rating-block {
+      display: flex; flex-direction: column; align-items: center;
+      gap: var(--xs); margin-top: var(--xs);
+      padding: var(--s) var(--m);
+      background: var(--page-bg); border-radius: var(--r-card);
+      width: 100%;
+    }
+    .rating-lbl { font-size: 15px; color: var(--dark); font-weight: 500; text-align: center; }
+    .rating-stars { display: flex; gap: 4px; }
+    .star {
+      background: none; border: none; cursor: pointer;
+      font-size: 36px; color: var(--disabled-bg);
+      line-height: 1; padding: 4px; transition: color .1s, transform .1s;
+    }
+    .star.active { color: #C4DE00; }
+    .star:active { transform: scale(.9); }
 
     /* ── SECTION TITLE ───────────────────────── */
     .sec-ttl {
@@ -699,7 +716,7 @@
     /* DS floating label input */
     .ds-input {
       height: 56px;
-      border: 1px solid var(--border-light);
+      border: 1px solid #006B55;
       border-radius: var(--r-input);
       background: var(--white);
       display: flex;
@@ -710,10 +727,16 @@
       transition: border .15s, box-shadow .15s, background .15s;
       cursor: text;
     }
+    .ds-input:hover { border-width: 2px; }
     .ds-input:focus-within {
-      border: 2px solid var(--border);
+      border: 4px solid #006B55;
       background: #D1F3E7;
-      box-shadow: 0 2px 8px rgba(0,64,51,.12);
+      box-shadow:
+        -2px   2px  7px  rgba(33,147,122,.08),
+        -9px   8px  12px rgba(33,147,122,.07),
+        -19px 19px  16px rgba(33,147,122,.04),
+        -35px 34px  19px rgba(33,147,122,.01),
+        -54px 52px  21px rgba(33,147,122,.00);
     }
     .ds-input .ds-lbl {
       font-size: 12px;
@@ -721,12 +744,14 @@
       color: #006B55;
       line-height: 1.2;
       pointer-events: none;
+      flex-shrink: 0;
     }
     .ds-input input {
-      height: auto;
       border: none !important;
       border-radius: 0 !important;
       padding: 0 !important;
+      margin: 0 !important;
+      height: 21px !important;
       font-size: 16px;
       font-weight: 500;
       color: var(--dark);
@@ -735,12 +760,32 @@
       box-shadow: none !important;
       line-height: 1.3;
       width: 100%;
+      flex-shrink: 0;
     }
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: .45;
-      cursor: pointer;
-      margin-left: -2px;
+    .ds-input input::placeholder { color: var(--disabled-txt); }
+    /* DS textarea variant */
+    .ds-input.ds-textarea {
+      height: auto;
+      min-height: 56px;
+      align-items: stretch;
     }
+    .ds-input.ds-textarea textarea {
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--dark);
+      background: transparent !important;
+      outline: none !important;
+      box-shadow: none !important;
+      resize: none;
+      line-height: 1.5;
+      width: 100%;
+      min-height: 80px;
+      font-family: var(--font);
+    }
+    .ds-input.ds-textarea textarea::placeholder { color: var(--disabled-txt); }
     .helper-text {
       font-size: 12px;
       color: var(--body-sec);
@@ -759,9 +804,9 @@
 <div class="app">
 
 <!-- ╔══════════════════════════════════════════╗
-     ║  SCREEN 1 — Foto škody                   ║
+     ║  SCREEN 1 — Ověření klienta              ║
      ╚══════════════════════════════════════════╝ -->
-<div class="screen active" id="screen-foto">
+<div class="screen active" id="screen-overeni">
   <div class="header">
     <p class="product-name">Majetkové pojištění</p>
     <div class="stepper">
@@ -772,6 +817,105 @@
       <div class="step"><div class="step-circle future">3</div></div>
       <div class="step-line pending"></div>
       <div class="step"><div class="step-circle future">4</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">5</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">6</div></div>
+    </div>
+    <h2 class="step-label">Ověření klienta</h2>
+  </div>
+  <div class="content">
+    <label class="ds-input" style="margin-bottom:var(--xs)">
+      <span class="ds-lbl">Jméno  *</span>
+      <input type="text" id="overeni-jmeno" autocomplete="given-name" placeholder=" " oninput="validateOvereni()">
+    </label>
+    <label class="ds-input" style="margin-bottom:var(--xs)">
+      <span class="ds-lbl">Příjmení  *</span>
+      <input type="text" id="overeni-prijmeni" autocomplete="family-name" placeholder=" " oninput="validateOvereni()">
+    </label>
+    <label class="ds-input">
+      <span class="ds-lbl">Datum narození  *</span>
+      <input type="date" id="overeni-datum" oninput="validateOvereni()">
+    </label>
+  </div>
+  <div class="bottom-nav">
+    <button class="btn btn-p" id="btn-overeni-ok" disabled onclick="showScreen('screen-udalost')">Pokračovat</button>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 2 — Co, kdy a kde                ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen" id="screen-udalost">
+  <div class="header">
+    <p class="product-name">Majetkové pojištění</p>
+    <div class="stepper">
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">2</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">3</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">4</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">5</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">6</div></div>
+    </div>
+    <h2 class="step-label">Co a kdy se stalo</h2>
+  </div>
+  <div class="content">
+    <label class="ds-input" style="margin-bottom:var(--s)">
+      <span class="ds-lbl">Adresa události  *</span>
+      <input type="text" id="udalost-adresa" autocomplete="street-address" placeholder="Ulice, město…" oninput="validateUdalost()">
+    </label>
+
+    <div class="field-pair" style="margin-bottom:var(--xxs)">
+      <label class="ds-input">
+        <span class="ds-lbl">Datum  *</span>
+        <input type="date" id="incident-date" oninput="validateUdalost()">
+      </label>
+      <label class="ds-input">
+        <span class="ds-lbl">Přibližný čas  *</span>
+        <input type="text" id="incident-time" placeholder="večer, 18:00…" oninput="validateUdalost()">
+      </label>
+    </div>
+    <p class="helper-text">Stačí přibližný čas — „odpoledne" nebo „kolem 20:00" je v pořádku.</p>
+
+    <label class="ds-input ds-textarea">
+      <span class="ds-lbl">Popis události (volitelné)</span>
+      <textarea id="udalost-popis" placeholder="Popište, co se stalo…"></textarea>
+    </label>
+    <p class="helper-text" style="margin-top:6px;margin-bottom:0">Např. „Silná bouřka porazila strom, který prorazil střechu garáže a poškodil okno v přízemí."</p>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-row">
+      <button class="btn btn-t" onclick="showScreen('screen-overeni')">Zpět</button>
+      <button class="btn btn-p" id="btn-udalost-ok" disabled onclick="showScreen('screen-foto')">Pokračovat</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════╗
+     ║  SCREEN 3 — Foto škody                   ║
+     ╚══════════════════════════════════════════╝ -->
+<div class="screen" id="screen-foto">
+  <div class="header">
+    <p class="product-name">Majetkové pojištění</p>
+    <div class="stepper">
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">3</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">4</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">5</div></div>
+      <div class="step-line pending"></div>
+      <div class="step"><div class="step-circle future">6</div></div>
     </div>
     <h2 class="step-label">Přidejte foto škody</h2>
   </div>
@@ -820,13 +964,16 @@
   <input type="file" id="fi-more"  class="file-hidden" accept="image/*" capture="environment" onchange="handlePhotos(this)">
 
   <div class="bottom-nav">
-    <button class="btn btn-p" id="btn-foto-ok" disabled onclick="startAI()">Pokračovat</button>
+    <div class="nav-row">
+      <button class="btn btn-t" onclick="showScreen('screen-udalost')">Zpět</button>
+      <button class="btn btn-p" id="btn-foto-ok" disabled onclick="startAI()">Pokračovat</button>
+    </div>
   </div>
 </div>
 
 
 <!-- ╔══════════════════════════════════════════╗
-     ║  SCREEN 2 — AI zpracování                ║
+     ║  SCREEN 4 — AI zpracování                ║
      ╚══════════════════════════════════════════╝ -->
 <div class="screen" id="screen-loading">
   <div class="load-center">
@@ -853,11 +1000,15 @@
     <div class="stepper">
       <div class="step"><div class="step-circle past">✓</div></div>
       <div class="step-line done"></div>
-      <div class="step"><div class="step-circle current">2</div></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">4</div></div>
       <div class="step-line pending"></div>
-      <div class="step"><div class="step-circle future">3</div></div>
+      <div class="step"><div class="step-circle future">5</div></div>
       <div class="step-line pending"></div>
-      <div class="step"><div class="step-circle future">4</div></div>
+      <div class="step"><div class="step-circle future">6</div></div>
     </div>
     <h2 class="step-label">Nalezená poškození</h2>
   </div>
@@ -939,26 +1090,12 @@
       </button>
     </div>
 
-    <div class="card">
-      <p class="card-title">Kdy k události došlo</p>
-      <div class="field-pair">
-        <label class="ds-input">
-          <span class="ds-lbl">Datum <span style="color:var(--error)">*</span></span>
-          <input type="date" id="incident-date" oninput="validateAiStep()">
-        </label>
-        <label class="ds-input">
-          <span class="ds-lbl">Přibližný čas <span style="color:var(--error)">*</span></span>
-          <input type="text" id="incident-time" placeholder="večer, 18:00…" oninput="validateAiStep()">
-        </label>
-      </div>
-      <p class="helper-text" style="margin-bottom:0">Stačí přibližný čas — „odpoledne" nebo „kolem 20:00" je v pořádku.</p>
-    </div>
   </div>
 
   <div class="bottom-nav">
     <div class="nav-row">
       <button class="btn btn-t" onclick="showScreen('screen-foto')">Zpět</button>
-      <button class="btn btn-p" id="btn-ai-ok" disabled onclick="showScreen('screen-narok')">Potvrdit a pokračovat</button>
+      <button class="btn btn-p" id="btn-ai-ok" onclick="showScreen('screen-narok')">Potvrdit a pokračovat</button>
     </div>
   </div>
 </div>
@@ -975,9 +1112,13 @@
       <div class="step-line done"></div>
       <div class="step"><div class="step-circle past">✓</div></div>
       <div class="step-line done"></div>
-      <div class="step"><div class="step-circle current">3</div></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">5</div></div>
       <div class="step-line pending"></div>
-      <div class="step"><div class="step-circle future">4</div></div>
+      <div class="step"><div class="step-circle future">6</div></div>
     </div>
     <h2 class="step-label">Váš nárok na krytí</h2>
   </div>
@@ -1032,10 +1173,6 @@
       </div>
     </div>
 
-    <div class="field-wrap">
-      <label class="field-lbl">Máte další informace k případu? (volitelné)</label>
-      <textarea placeholder="Doplňte cokoliv, co by mohlo ovlivnit posouzení…" rows="3"></textarea>
-    </div>
   </div>
 
   <div class="bottom-nav">
@@ -1060,7 +1197,11 @@
       <div class="step-line done"></div>
       <div class="step"><div class="step-circle past">✓</div></div>
       <div class="step-line done"></div>
-      <div class="step"><div class="step-circle current">4</div></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle past">✓</div></div>
+      <div class="step-line done"></div>
+      <div class="step"><div class="step-circle current">6</div></div>
     </div>
     <h2 class="step-label">Návrh plnění</h2>
   </div>
@@ -1146,7 +1287,7 @@
       <div class="account-edit" id="account-edit">
         <div class="field-wrap" style="margin-top:var(--xs);margin-bottom:var(--xxs)">
           <label class="field-lbl">Nové číslo účtu</label>
-          <input type="text" id="account-input" placeholder="123456789/0300">
+          <input type="text" id="account-input" placeholder="123456789/0300" style="height:56px">
         </div>
         <button class="btn btn-s" style="height:44px;font-size:13px" onclick="saveAccount()">Uložit</button>
       </div>
@@ -1165,7 +1306,7 @@
   <div class="bottom-nav">
     <div class="nav-row">
       <button class="btn btn-t" onclick="showScreen('screen-narok')">Zpět</button>
-      <button class="btn btn-p" onclick="submitClaim()">Souhlasím s návrhem plnění</button>
+      <button class="btn btn-p" onclick="submitClaim()">Odeslat peníze na účet</button>
     </div>
   </div>
 </div>
@@ -1187,6 +1328,17 @@
     <p class="ok-text">Odeslali jsme <strong id="ok-amount">28 900 Kč</strong> na účet <strong id="ok-account">123456789/0300</strong> jako okamžitou platbu — pokud ji vaše banka podporuje, peníze jsou už na účtu.</p>
 
     <p class="ok-text sec">Potvrzení jsme odeslali na váš e-mail.</p>
+
+    <div class="rating-block">
+      <p class="rating-lbl">Jak se vám hlášení vyřizovalo?</p>
+      <div class="rating-stars" id="rating-stars">
+        <button class="star active" onclick="setRating(1)">★</button>
+        <button class="star active" onclick="setRating(2)">★</button>
+        <button class="star active" onclick="setRating(3)">★</button>
+        <button class="star active" onclick="setRating(4)">★</button>
+        <button class="star active" onclick="setRating(5)">★</button>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-nav">
@@ -1362,10 +1514,36 @@
   }
 
   // ── AI step validation ────────────────────────────
+  function maskDate(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length >= 5) v = v.slice(0,2) + '.' + v.slice(2,4) + '.' + v.slice(4);
+    else if (v.length >= 3) v = v.slice(0,2) + '.' + v.slice(2);
+    input.value = v;
+  }
+
+  function validateOvereni() {
+    const ok = document.getElementById('overeni-jmeno').value.trim() &&
+               document.getElementById('overeni-prijmeni').value.trim() &&
+               document.getElementById('overeni-datum').value;
+    document.getElementById('btn-overeni-ok').disabled = !ok;
+  }
+
+  function validateUdalost() {
+    const ok = document.getElementById('udalost-adresa').value.trim() &&
+               document.getElementById('incident-date').value &&
+               document.getElementById('incident-time').value.trim();
+    document.getElementById('btn-udalost-ok').disabled = !ok;
+  }
+
   function validateAiStep() {
-    const dated = !!document.getElementById('incident-date').value;
-    const timed = !!document.getElementById('incident-time').value.trim();
-    document.getElementById('btn-ai-ok').disabled = !(dated && timed);
+    const hasItems = document.querySelectorAll('#dmg-list .dmg-item').length > 0;
+    document.getElementById('btn-ai-ok').disabled = !hasItems;
+  }
+
+  function setRating(n) {
+    document.querySelectorAll('.star').forEach((s, i) => {
+      s.classList.toggle('active', i < n);
+    });
   }
 
   // ── Damage bottom sheet ──────────────────────────
@@ -1387,7 +1565,7 @@
       fields.innerHTML = `
         <label class="ds-input">
           <span class="ds-lbl">Název poškození *</span>
-          <input type="text" id="bs-name" value="${name}">
+          <input type="text" id="bs-name" value="${name}" placeholder=" ">
         </label>
         <label class="ds-input">
           <span class="ds-lbl">Upřesnění (volitelné)</span>
