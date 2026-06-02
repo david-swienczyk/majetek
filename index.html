@@ -2330,7 +2330,7 @@
     else validateOvereni();
   }
 
-  function parseBirthDate(value) {
+  function parseDateLoose(value) {
     const normalized = value.trim().replace(/[,/\-\s]/g, '.').replace(/\.{2,}/g, '.');
     const match = normalized.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
     if (!match) return null;
@@ -2339,6 +2339,15 @@
     const month = Number(match[2]);
     const year = Number(match[3]);
     const date = new Date(year, month - 1, day);
+
+    return { day, month, year, date };
+  }
+
+  function parseBirthDate(value) {
+    const parsed = parseDateLoose(value);
+    if (!parsed) return null;
+
+    const { day, month, year, date } = parsed;
 
     if (
       date.getFullYear() !== year ||
@@ -2352,6 +2361,22 @@
     if (year < 1900 || date > today) return null;
 
     return { day, month, year, date };
+  }
+
+  function isFutureDateValue(value) {
+    const parsed = parseDateLoose(value);
+    if (!parsed) return false;
+
+    const { day, month, year, date } = parsed;
+    if (
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) return false;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date > today;
   }
 
   function isValidBirthDate(value) {
@@ -2472,7 +2497,9 @@
       'overeni-datum',
       'overeni-datum-msg',
       show,
-      'Zadejte platné datum ve formátu DD.MM.RRRR.',
+      isFutureDateValue(document.getElementById('overeni-datum').value)
+        ? 'Datum nemůže být v budoucnu.'
+        : 'Zadejte platné datum ve formátu DD.MM.RRRR.',
       'Např. 14.02.1988'
     );
   }
@@ -2482,7 +2509,9 @@
       'incident-date',
       'incident-date-msg',
       show,
-      'Zadejte platné datum události ve formátu DD.MM.RRRR.'
+      isFutureDateValue(document.getElementById('incident-date').value)
+        ? 'Datum nemůže být v budoucnu.'
+        : 'Zadejte platné datum události ve formátu DD.MM.RRRR.'
     );
   }
 

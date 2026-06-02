@@ -62,6 +62,8 @@ Doporučený zápis poznámky:
 - [ ] Backspace z hodnoty `14.02` pokračuje přes `14.0` → `14.` → `14` bez zaseknutí na tečce.
 - [ ] Neplatné datum `31.02.2010` zobrazí error a CTA zůstane disabled.
 - [ ] Budoucí datum zobrazí error a CTA zůstane disabled.
+- [ ] Budoucí datum zobrazí konkrétní hlášku `Datum nemůže být v budoucnu.`
+- [ ] Neexistující datum `31.02.2010` dál zobrazí formátovou hlášku, ne hlášku o budoucnosti.
 - [ ] Rok před `1900` zobrazí error a CTA zůstane disabled.
 - [ ] Smazání data znovu disabled CTA.
 
@@ -98,6 +100,8 @@ Doporučený zápis poznámky:
 - [ ] Postupné psaní data události `31.3.1990` je validní a po opuštění pole se normalizuje na `31.03.1990`.
 - [ ] Neplatné datum události `31.02.2010` zobrazí error a CTA zůstane disabled.
 - [ ] Budoucí datum události zobrazí error a CTA zůstane disabled.
+- [ ] Budoucí datum události zobrazí konkrétní hlášku `Datum nemůže být v budoucnu.`
+- [ ] Neexistující datum události `31.02.2010` dál zobrazí formátovou hlášku, ne hlášku o budoucnosti.
 - [ ] Přibližný čas jde zadat volným textem.
 - [ ] Popis události má label `Popis události *`.
 - [ ] Pole `Popis události *` nepoužívá duplicitní placeholder; instrukce je řešená labelem a helperem.
