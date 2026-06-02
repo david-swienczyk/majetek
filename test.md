@@ -105,18 +105,26 @@ Doporučený zápis poznámky:
 
 ## Krok 3 — Foto škody
 
-- [ ] Bez fotky je CTA disabled.
-- [ ] Upload / pořízení fotky zobrazí náhled.
-- [ ] Po přidání fotky je CTA enabled.
-- [ ] Po odebrání poslední fotky je CTA znovu disabled.
-- [ ] Lze přidat více fotek.
-- [ ] Počet fotek se správně aktualizuje.
+- [ ] Nadpis kroku je „Přidejte dokumentaci škody“.
+- [ ] Krok obsahuje dvě upload sekce: `Detailní pohled *` a `Celkový pohled *`.
+- [ ] Texty uploadu říkají `foto nebo video`, ne pouze `fotka`.
+- [ ] Prázdné upload zóny jsou kompaktní horizontální card, ne vysoký hero block.
+- [ ] Obě file input pole podporují `image/*,video/*`.
+- [ ] Bez detailního i celkového souboru je CTA disabled.
+- [ ] Po přidání pouze detailního souboru zůstává CTA disabled.
+- [ ] Po přidání pouze celkového souboru zůstává CTA disabled.
+- [ ] Po přidání detailního i celkového souboru je CTA enabled.
+- [ ] Upload fotky zobrazí obrázkový náhled ve správné sekci.
+- [ ] Upload videa zobrazí video náhled / video badge ve správné sekci.
+- [ ] Lze přidat více souborů do každé sekce.
+- [ ] Počet souborů se správně aktualizuje v každé sekci.
+- [ ] Odebrání posledního souboru z jedné ze sekcí znovu disabled CTA.
 
 ---
 
 ## Krok 4 — AI analýza a nalezená poškození
 
-- [ ] Loading obrazovka se zobrazí po pokračování z fotek.
+- [ ] Loading obrazovka se zobrazí po pokračování z dokumentace škody.
 - [ ] Po loadingu se zobrazí výsledky AI analýzy.
 - [ ] Pole `Seznam a rozměr poškozeného majetku *` je zobrazené na 4. kroku.
 - [ ] Pole `Seznam a rozměr poškozeného majetku *` zatím neblokuje CTA 4. kroku; chování se bude řešit později.

@@ -173,14 +173,35 @@
     }
 
     /* ── UPLOAD ZONE ─────────────────────────── */
+    .upload-group {
+      margin-bottom: var(--s);
+    }
+    .upload-head {
+      margin-bottom: var(--xxs);
+      padding: 0 2px;
+    }
+    .upload-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .upload-helper {
+      font-size: 13px;
+      color: var(--body-sec);
+      line-height: 1.4;
+    }
     .upload-zone {
       border: 2px dashed var(--border-light);
       border-radius: var(--r-card);
-      padding: var(--xl) var(--m);
+      min-height: 104px;
+      padding: var(--xs);
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      gap: 10px;
+      justify-content: flex-start;
+      gap: var(--xs);
       cursor: pointer;
       transition: all .2s;
       margin-bottom: var(--s);
@@ -188,9 +209,15 @@
       user-select: none;
     }
     .upload-zone:active { background: var(--light-bg); border-color: var(--border); }
-    .upload-zone-icon { width: 48px; height: 48px; color: var(--body-sec); }
-    .upload-zone-text { font-size: 16px; font-weight: 500; color: var(--dark); text-align: center; }
-    .upload-zone-sub  { font-size: 13px; color: var(--body-sec); text-align: center; }
+    .upload-zone-icon { width: 36px; height: 36px; color: var(--body-sec); flex-shrink: 0; }
+    .upload-zone-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .upload-zone-text { font-size: 15px; font-weight: 600; color: var(--dark); text-align: left; line-height: 1.3; }
+    .upload-zone-sub  { font-size: 12px; color: var(--body-sec); text-align: left; line-height: 1.35; }
 
     /* ── PHOTO GRID ──────────────────────────── */
     .photo-badge {
@@ -220,6 +247,22 @@
       background: var(--border-light);
     }
     .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .photo-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .media-video-badge {
+      position: absolute;
+      left: 6px;
+      bottom: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 14px;
+      padding: 3px 7px;
+      background: rgba(0,64,51,.78);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+    }
     .photo-thumb-rm {
       position: absolute;
       top: 5px; right: 5px;
@@ -1041,7 +1084,7 @@
       <div class="step-line pending"></div>
       <div class="step"><div class="step-circle future">6</div></div>
     </div>
-    <h2 class="step-label">Přidejte foto škody</h2>
+    <h2 class="step-label">Přidejte dokumentaci škody</h2>
   </div>
 
   <div class="content">
@@ -1050,42 +1093,84 @@
         <circle cx="12" cy="12" r="10"/>
         <path d="M12 8v4m0 4h.01" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="ib-text">Vyfoťte poškozené místo co nejzřetelněji — čím lepší foto, tím přesnější odhad škody.</span>
+      <span class="ib-text">Přidejte detailní i celkový pohled na škodu. Může jít o foto nebo video — důležité je zachytit detail poškození i širší kontext.</span>
     </div>
 
-    <!-- Empty state -->
-    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('fi-first').click()">
-      <svg class="upload-zone-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8">
-        <rect x="4" y="10" width="40" height="30" rx="6"/>
-        <circle cx="24" cy="26" r="8"/>
-        <path d="M16 10l3.5-6h9l3.5 6" stroke-linecap="round"/>
-        <circle cx="38" cy="17" r="2.5" fill="currentColor" stroke="none"/>
-      </svg>
-      <span class="upload-zone-text">Pořídit nebo nahrát fotku</span>
-      <span class="upload-zone-sub">JPG, PNG, HEIC</span>
-    </div>
-
-    <!-- After upload -->
-    <div id="photo-section" style="display:none">
-      <div class="photo-badge">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <rect x="3" y="6" width="18" height="13" rx="3"/>
-          <circle cx="12" cy="12.5" r="3.5"/>
-        </svg>
-        <span id="photo-count-lbl">1 foto</span>
+    <div class="upload-group" data-media-section="detail">
+      <div class="upload-head">
+        <p class="upload-title">Detailní pohled *</p>
+        <p class="upload-helper">Zachyťte prasklinu, poškozenou část nebo konkrétní místo škody.</p>
       </div>
-      <div class="photo-grid" id="photo-grid"></div>
-      <button class="btn-add" onclick="document.getElementById('fi-more').click()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+      <div class="upload-zone" id="upload-zone-detail" onclick="document.getElementById('fi-detail').click()">
+        <svg class="upload-zone-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="4" y="10" width="40" height="30" rx="6"/>
+          <circle cx="24" cy="26" r="8"/>
+          <path d="M16 10l3.5-6h9l3.5 6" stroke-linecap="round"/>
+          <circle cx="38" cy="17" r="2.5" fill="currentColor" stroke="none"/>
         </svg>
-        Přidat další fotku
-      </button>
+        <span class="upload-zone-copy">
+          <span class="upload-zone-text">Přidat foto nebo video</span>
+          <span class="upload-zone-sub">JPG, PNG, HEIC, MP4, MOV</span>
+        </span>
+      </div>
+      <div id="media-section-detail" style="display:none">
+        <div class="photo-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="6" width="18" height="13" rx="3"/>
+            <circle cx="12" cy="12.5" r="3.5"/>
+          </svg>
+          <span id="media-count-detail">0 souborů</span>
+        </div>
+        <div class="photo-grid" id="media-grid-detail"></div>
+        <button class="btn-add" onclick="document.getElementById('fi-detail-more').click()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+          </svg>
+          Přidat další foto/video
+        </button>
+      </div>
+    </div>
+
+    <div class="upload-group" data-media-section="overall">
+      <div class="upload-head">
+        <p class="upload-title">Celkový pohled *</p>
+        <p class="upload-helper">Zachyťte celou poškozenou věc a její okolí, aby byl jasný rozsah škody.</p>
+      </div>
+      <div class="upload-zone" id="upload-zone-overall" onclick="document.getElementById('fi-overall').click()">
+        <svg class="upload-zone-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="4" y="10" width="40" height="30" rx="6"/>
+          <circle cx="24" cy="26" r="8"/>
+          <path d="M16 10l3.5-6h9l3.5 6" stroke-linecap="round"/>
+          <circle cx="38" cy="17" r="2.5" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="upload-zone-copy">
+          <span class="upload-zone-text">Přidat foto nebo video</span>
+          <span class="upload-zone-sub">JPG, PNG, HEIC, MP4, MOV</span>
+        </span>
+      </div>
+      <div id="media-section-overall" style="display:none">
+        <div class="photo-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="6" width="18" height="13" rx="3"/>
+            <circle cx="12" cy="12.5" r="3.5"/>
+          </svg>
+          <span id="media-count-overall">0 souborů</span>
+        </div>
+        <div class="photo-grid" id="media-grid-overall"></div>
+        <button class="btn-add" onclick="document.getElementById('fi-overall-more').click()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+          </svg>
+          Přidat další foto/video
+        </button>
+      </div>
     </div>
   </div>
 
-  <input type="file" id="fi-first" class="file-hidden" accept="image/*" capture="environment" onchange="handlePhotos(this)">
-  <input type="file" id="fi-more"  class="file-hidden" accept="image/*" capture="environment" onchange="handlePhotos(this)">
+  <input type="file" id="fi-detail" class="file-hidden" accept="image/*,video/*" capture="environment" onchange="handleMedia(this, 'detail')">
+  <input type="file" id="fi-detail-more" class="file-hidden" accept="image/*,video/*" capture="environment" multiple onchange="handleMedia(this, 'detail')">
+  <input type="file" id="fi-overall" class="file-hidden" accept="image/*,video/*" capture="environment" onchange="handleMedia(this, 'overall')">
+  <input type="file" id="fi-overall-more" class="file-hidden" accept="image/*,video/*" capture="environment" multiple onchange="handleMedia(this, 'overall')">
 
   <div class="bottom-nav">
     <div class="nav-row">
@@ -1109,7 +1194,7 @@
     <div class="spinner"></div>
     <div>
       <p class="load-title">Analyzujeme poškození…</p>
-      <p class="load-sub">Chvilku strpení, AI prochází vaše foto.</p>
+      <p class="load-sub">Chvilku strpení, AI prochází vaše foto a videa.</p>
     </div>
   </div>
 </div>
@@ -1557,51 +1642,81 @@
     document.getElementById('narok-pending-wrap').style.display   = pending.length  ? '' : 'none';
   }
 
-  // ── Photos ───────────────────────────────────────
-  const photos = [];
+  // ── Media documentation ───────────────────────────
+  const mediaFiles = {
+    detail: [],
+    overall: []
+  };
 
-  function handlePhotos(input) {
-    const files = Array.from(input.files);
-    if (!files.length) return;
+  function handleMedia(input, section) {
+    const files = Array.from(input.files || []);
+    if (!files.length || !mediaFiles[section]) return;
+
     files.forEach(file => {
       const reader = new FileReader();
-      reader.onload = e => { photos.push(e.target.result); renderPhotos(); };
+      reader.onload = e => {
+        mediaFiles[section].push({
+          src: e.target.result,
+          type: file.type || '',
+          name: file.name || ''
+        });
+        renderMediaSection(section);
+      };
       reader.readAsDataURL(file);
     });
+
     input.value = '';
   }
 
-  function renderPhotos() {
-    const grid    = document.getElementById('photo-grid');
-    const section = document.getElementById('photo-section');
-    const zone    = document.getElementById('upload-zone');
-    const btn     = document.getElementById('btn-foto-ok');
-    const lbl     = document.getElementById('photo-count-lbl');
+  function mediaCountLabel(count) {
+    if (count === 1) return '1 soubor';
+    if (count >= 2 && count <= 4) return `${count} soubory`;
+    return `${count} souborů`;
+  }
 
-    if (photos.length > 0) {
-      section.style.display = 'block';
+  function renderMediaSection(section) {
+    const files = mediaFiles[section] || [];
+    const grid = document.getElementById(`media-grid-${section}`);
+    const uploadSection = document.getElementById(`media-section-${section}`);
+    const zone = document.getElementById(`upload-zone-${section}`);
+    const label = document.getElementById(`media-count-${section}`);
+
+    if (!grid || !uploadSection || !zone || !label) return;
+
+    if (files.length > 0) {
+      uploadSection.style.display = 'block';
       zone.style.display = 'none';
     } else {
-      section.style.display = 'none';
+      uploadSection.style.display = 'none';
       zone.style.display = 'flex';
     }
 
-    lbl.textContent = photos.length + (photos.length === 1 ? ' foto' : ' fotky');
-
+    label.textContent = mediaCountLabel(files.length);
     grid.innerHTML = '';
-    photos.forEach((src, i) => {
+
+    files.forEach((file, i) => {
+      const isVideo = file.type.startsWith('video/');
       const div = document.createElement('div');
       div.className = 'photo-thumb';
-      div.innerHTML = `<img src="${src}" alt=""><button class="photo-thumb-rm" onclick="removePhoto(${i})">✕</button>`;
+      div.innerHTML = isVideo
+        ? `<video src="${file.src}" muted playsinline preload="metadata"></video><span class="media-video-badge">▶ VIDEO</span><button class="photo-thumb-rm" onclick="removeMedia('${section}', ${i})" aria-label="Odebrat video">✕</button>`
+        : `<img src="${file.src}" alt=""><button class="photo-thumb-rm" onclick="removeMedia('${section}', ${i})" aria-label="Odebrat foto">✕</button>`;
       grid.appendChild(div);
     });
 
-    btn.disabled = photos.length === 0;
+    validateMediaStep();
   }
 
-  function removePhoto(i) {
-    photos.splice(i, 1);
-    renderPhotos();
+  function validateMediaStep() {
+    const btn = document.getElementById('btn-foto-ok');
+    if (!btn) return;
+    btn.disabled = mediaFiles.detail.length === 0 || mediaFiles.overall.length === 0;
+  }
+
+  function removeMedia(section, index) {
+    if (!mediaFiles[section]) return;
+    mediaFiles[section].splice(index, 1);
+    renderMediaSection(section);
   }
 
   // ── AI mock ──────────────────────────────────────
@@ -2213,6 +2328,7 @@
     if (incidentPicker) incidentPicker.max = todayIsoLocal();
     updateTextareaCounter('udalost-popis', 'udalost-popis-counter');
     updateTextareaCounter('majetek-popis', 'majetek-popis-counter');
+    validateMediaStep();
     // date intentionally empty — user must choose consciously
   });
 
