@@ -76,11 +76,29 @@ Doporučený zápis poznámky:
 
 ## Krok 2 — Co a kdy se stalo
 
+- [ ] Nadpis kroku je „Co, kdy a jak se stalo?“.
 - [ ] Bez adresy, data události nebo času zůstává CTA disabled.
+- [ ] Bez popisu události zůstává CTA disabled.
 - [ ] Adresa jde zadat přes klávesnici.
-- [ ] Datum události jde vybrat.
+- [ ] Datum události jde zadat ručně jako `DD.MM.RRRR`.
+- [ ] Datum události jde vybrat přes ikonu kalendáře.
+- [ ] Postupné psaní data události `31.3.` ponechá hodnotu `31.3.`.
+- [ ] Postupné psaní data události `31.3.1990` je validní a po opuštění pole se normalizuje na `31.03.1990`.
+- [ ] Neplatné datum události `31.02.2010` zobrazí error a CTA zůstane disabled.
+- [ ] Budoucí datum události zobrazí error a CTA zůstane disabled.
 - [ ] Přibližný čas jde zadat volným textem.
-- [ ] Volitelný popis neblokuje pokračování.
+- [ ] Popis události má label `Popis události *`.
+- [ ] Pole `Popis události *` nepoužívá duplicitní placeholder; instrukce je řešená labelem a helperem.
+- [ ] Ruční vyplnění popisu události aktivuje CTA, pokud jsou vyplněná i ostatní povinná pole.
+- [ ] Pole `Popis události *` má limit 1000 znaků a viditelný counter.
+- [ ] Counter pole `Popis události *` je uvnitř textarey vlevo dole a text do něj nezatéká.
+- [ ] Pole `Popis události *` nemá zbytečně velkou prázdnou výšku a roste až podle obsahu.
+- [ ] Kliknutí na mikrofon spustí fake diktování a zobrazí stav `Poslouchám…`.
+- [ ] Fake diktování po krátké prodlevě doplní text do popisu události.
+- [ ] Fake diktovaný text odpovídá škodě na sklokeramické desce.
+- [ ] Po doplnění textu fake diktováním se znovu spustí validace CTA.
+- [ ] CTA je enabled po vyplnění adresy, data, času a popisu události.
+- [ ] Hover/focus na poli `Popis události *` neposune label, text ani mikrofon button.
 - [ ] Helper texty jsou čitelné a nepřekrývají CTA.
 
 ---
@@ -100,6 +118,15 @@ Doporučený zápis poznámky:
 
 - [ ] Loading obrazovka se zobrazí po pokračování z fotek.
 - [ ] Po loadingu se zobrazí výsledky AI analýzy.
+- [ ] Pole `Seznam a rozměr poškozeného majetku *` je zobrazené na 4. kroku.
+- [ ] Pole `Seznam a rozměr poškozeného majetku *` zatím neblokuje CTA 4. kroku; chování se bude řešit později.
+- [ ] Pole `Seznam a rozměr poškozeného majetku *` nepoužívá duplicitní placeholder; instrukce je řešená labelem a helperem.
+- [ ] Pole `Seznam a rozměr poškozeného majetku *` má helper s příkladem sklokeramické desky Mora.
+- [ ] Pole `Seznam a rozměr poškozeného majetku *` má limit 1000 znaků a viditelný counter.
+- [ ] Counter pole `Seznam a rozměr poškozeného majetku *` je uvnitř textarey vlevo dole a text do něj nezatéká.
+- [ ] Pole `Seznam a rozměr poškozeného majetku *` nemá zbytečně velkou prázdnou výšku a roste až podle obsahu.
+- [ ] Mikrofon u pole `Seznam a rozměr poškozeného majetku *` doplní přirozený text se značkou Mora a rozměrem cca 60 cm.
+- [ ] Hover/focus na poli `Seznam a rozměr poškozeného majetku *` neposune label, text ani mikrofon button.
 - [ ] Seznam nalezených poškození je čitelný.
 - [ ] Editace poškození otevře bottom sheet.
 - [ ] Uložení změny upraví položku v seznamu.

@@ -724,14 +724,18 @@
       justify-content: center;
       padding: 8px var(--xs);
       gap: 2px;
-      transition: border .15s, box-shadow .15s, background .15s;
+      transition: box-shadow .15s, background .15s;
       cursor: text;
     }
-    .ds-input:hover { border-width: 2px; }
+    .ds-input:hover {
+      border-width: 1px;
+      box-shadow: inset 0 0 0 1px #006B55;
+    }
     .ds-input:focus-within {
-      border: 4px solid #006B55;
+      border-width: 1px;
       background: #D1F3E7;
       box-shadow:
+        inset 0 0 0 3px #006B55,
         -2px   2px  7px  rgba(33,147,122,.08),
         -9px   8px  12px rgba(33,147,122,.07),
         -19px 19px  16px rgba(33,147,122,.04),
@@ -811,6 +815,10 @@
       min-height: 56px;
       align-items: stretch;
     }
+    .ds-input.ds-textarea.with-voice {
+      position: relative;
+      padding-bottom: 56px;
+    }
     .ds-input.ds-textarea textarea {
       border: none !important;
       border-radius: 0 !important;
@@ -824,10 +832,59 @@
       resize: none;
       line-height: 1.5;
       width: 100%;
-      min-height: 80px;
+      min-height: 72px;
+      max-height: 160px;
+      overflow-y: auto;
       font-family: var(--font);
     }
     .ds-input.ds-textarea textarea::placeholder { color: var(--disabled-txt); }
+    .voice-btn {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      min-height: 40px;
+      border: none;
+      border-radius: 20px;
+      background: var(--light-bg);
+      color: var(--dark);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .voice-btn.listening {
+      background: var(--brand);
+      box-shadow: var(--shadow-mn);
+    }
+    .voice-btn:focus-visible {
+      outline: 4px solid var(--border);
+      outline-offset: 2px;
+    }
+    .voice-status {
+      min-height: 18px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--body-sec);
+      line-height: 1.45;
+      margin-top: 6px;
+      margin-bottom: var(--xxs);
+      padding: 0 2px;
+    }
+    .voice-status:empty { display: none; }
+    .textarea-counter {
+      position: absolute;
+      left: var(--xs);
+      bottom: 18px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--body-sec);
+      line-height: 1.45;
+      pointer-events: none;
+    }
     .helper-text {
       font-size: 12px;
       color: var(--body-sec);
@@ -847,7 +904,7 @@
 <div class="app">
 
 <!-- ╔══════════════════════════════════════════╗
-     ║  SCREEN 1 — Ověření klienta              ║
+     ║  SCREEN 1 — Kdo hlásí škodu              ║
      ╚══════════════════════════════════════════╝ -->
 <div class="screen active" id="screen-overeni">
   <div class="header">
@@ -895,7 +952,7 @@
 
 
 <!-- ╔══════════════════════════════════════════╗
-     ║  SCREEN 2 — Co, kdy a kde                ║
+     ║  SCREEN 2 — Co, kdy a jak se stalo       ║
      ╚══════════════════════════════════════════╝ -->
 <div class="screen" id="screen-udalost">
   <div class="header">
@@ -913,7 +970,7 @@
       <div class="step-line pending"></div>
       <div class="step"><div class="step-circle future">6</div></div>
     </div>
-    <h2 class="step-label">Co a kdy se stalo</h2>
+    <h2 class="step-label">Co, kdy a jak se stalo?</h2>
   </div>
   <div class="content">
     <label class="ds-input" style="margin-bottom:var(--s)">
@@ -922,22 +979,39 @@
     </label>
 
     <div class="field-pair" style="margin-bottom:var(--xxs)">
-      <label class="ds-input">
-        <span class="ds-lbl">Vyberte datum  *</span>
-        <input type="date" id="incident-date" oninput="validateUdalost()">
-      </label>
+      <div class="ds-input with-action">
+        <label class="ds-lbl" for="incident-date">Vyberte datum  *</label>
+        <input type="text" id="incident-date" inputmode="decimal" placeholder="DD.MM.RRRR" maxlength="10" aria-describedby="incident-date-msg" onbeforeinput="handleDateBeforeInput(event)" onkeydown="handleDateKeydown(event)" oninput="maskDate(this, event); validateUdalost()" onblur="normalizeDateField(this); validateUdalost(true)">
+        <button type="button" class="field-action" aria-label="Vybrat datum události z kalendáře" onclick="openDatePicker(event, 'incident-date', 'incident-date-picker')">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 3v3M17 3v3M4 9h16M6 5h12a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2z"/>
+          </svg>
+        </button>
+        <input type="date" id="incident-date-picker" class="date-picker-native" min="1900-01-01" tabindex="-1" aria-hidden="true" onchange="syncDateFromPicker('incident-date', 'incident-date-picker', validateUdalost)">
+      </div>
       <label class="ds-input">
         <span class="ds-lbl">Přibližný čas  *</span>
         <input type="text" id="incident-time" placeholder="večer, 18:00…" oninput="validateUdalost()">
       </label>
     </div>
+    <p class="helper-text error" id="incident-date-msg" style="display:none;margin-top:-2px;margin-bottom:var(--xxs)"></p>
     <p class="helper-text">Stačí přibližný čas — „odpoledne" nebo „kolem 20:00" je v pořádku.</p>
 
-    <label class="ds-input ds-textarea">
-      <span class="ds-lbl">Popis události (volitelné)</span>
-      <textarea id="udalost-popis" placeholder="Popište, co se stalo…"></textarea>
-    </label>
-    <p class="helper-text" style="margin-top:6px;margin-bottom:0">Např. „Silná bouřka porazila strom, který prorazil střechu garáže a poškodil okno v přízemí."</p>
+    <div class="ds-input ds-textarea with-voice">
+      <label class="ds-lbl" for="udalost-popis">Popis události  *</label>
+      <textarea id="udalost-popis" maxlength="1000" oninput="updateTextareaCounter('udalost-popis', 'udalost-popis-counter'); validateUdalost()"></textarea>
+      <button type="button" class="voice-btn" id="btn-voice" onclick="startVoiceInput('incident')" aria-controls="udalost-popis" aria-label="Nadiktovat popis události">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/>
+          <path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>
+        </svg>
+        <span id="voice-btn-label">Namluvit</span>
+      </button>
+      <span class="textarea-counter" id="udalost-popis-counter">0 / 1000 znaků</span>
+    </div>
+    <p class="voice-status" id="voice-status" aria-live="polite"></p>
+    <p class="helper-text" style="margin-top:6px">Např. „Praskla nám sklokeramická deska u jedné plotýnky."</p>
+
   </div>
   <div class="bottom-nav">
     <div class="nav-row">
@@ -1070,6 +1144,22 @@
       </svg>
       <span class="ib-text">AI analýza dokončena. Zkontrolujte, zda výsledky odpovídají skutečnosti, a případně doplňte detaily.</span>
     </div>
+
+
+    <div class="ds-input ds-textarea with-voice">
+      <label class="ds-lbl" for="majetek-popis">Seznam a rozměr poškozeného majetku  *</label>
+      <textarea id="majetek-popis" maxlength="1000" oninput="updateTextareaCounter('majetek-popis', 'majetek-popis-counter')"></textarea>
+      <button type="button" class="voice-btn" id="btn-asset-voice" onclick="startVoiceInput('asset')" aria-controls="majetek-popis" aria-label="Nadiktovat seznam a rozměr poškozeného majetku">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/>
+          <path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>
+        </svg>
+        <span id="asset-voice-btn-label">Namluvit</span>
+      </button>
+      <span class="textarea-counter" id="majetek-popis-counter">0 / 1000 znaků</span>
+    </div>
+    <p class="voice-status" id="asset-voice-status" aria-live="polite"></p>
+    <p class="helper-text" style="margin-top:6px">Např. „Sklokeramická deska Mora, cca 60 × 52 cm."</p>
 
     <div class="card" style="padding-bottom: var(--xs)">
       <p class="card-title">Co jsme našli na fotce</p>
@@ -1669,7 +1759,7 @@
       input.value = `${before}.${after}`.slice(0, 10);
       const caret = Math.min(before.length + 1, input.value.length);
       input.setSelectionRange(caret, caret);
-      validateOvereni();
+      validateDateOwner(input);
       return;
     }
 
@@ -1678,7 +1768,7 @@
       input.value = `${before}.${after}`.slice(0, 10);
       const caret = Math.min(before.length + 1, input.value.length);
       input.setSelectionRange(caret, caret);
-      validateOvereni();
+      validateDateOwner(input);
       return;
     }
 
@@ -1703,7 +1793,12 @@
     input.value = input.value.slice(0, removeIndex) + input.value.slice(removeIndex + 1);
     input.setSelectionRange(removeIndex, removeIndex);
     maskDate(input, { inputType: event.key === 'Backspace' ? 'deleteContentBackward' : 'deleteContentForward' });
-    validateOvereni();
+    validateDateOwner(input);
+  }
+
+  function validateDateOwner(input) {
+    if (input.id === 'incident-date') validateUdalost();
+    else validateOvereni();
   }
 
   function parseBirthDate(value) {
@@ -1734,6 +1829,10 @@
     return Boolean(parseBirthDate(value));
   }
 
+  function isValidDateValue(value) {
+    return isValidBirthDate(value);
+  }
+
   function formatBirthDateDisplay(value) {
     const parsed = parseBirthDate(value);
     if (!parsed) return value;
@@ -1741,7 +1840,11 @@
   }
 
   function normalizeBirthDate(input) {
-    if (isValidBirthDate(input.value)) input.value = formatBirthDateDisplay(input.value);
+    normalizeDateField(input);
+  }
+
+  function normalizeDateField(input) {
+    if (isValidDateValue(input.value)) input.value = formatBirthDateDisplay(input.value);
   }
 
   function displayToIsoDate(value) {
@@ -1765,11 +1868,15 @@
   }
 
   function openBirthDatePicker(event) {
+    openDatePicker(event, 'overeni-datum', 'overeni-datum-picker');
+  }
+
+  function openDatePicker(event, inputId, pickerId) {
     event.preventDefault();
     event.stopPropagation();
 
-    const input = document.getElementById('overeni-datum');
-    const picker = document.getElementById('overeni-datum-picker');
+    const input = document.getElementById(inputId);
+    const picker = document.getElementById(pickerId);
     const isoDate = displayToIsoDate(input.value.trim());
 
     if (isoDate) picker.value = isoDate;
@@ -1782,25 +1889,47 @@
   }
 
   function syncBirthDateFromPicker() {
-    const picker = document.getElementById('overeni-datum-picker');
-    const input = document.getElementById('overeni-datum');
+    syncDateFromPicker('overeni-datum', 'overeni-datum-picker', validateOvereni);
+  }
+
+  function syncDateFromPicker(inputId, pickerId, validateFn) {
+    const picker = document.getElementById(pickerId);
+    const input = document.getElementById(inputId);
 
     input.value = isoToDisplayDate(picker.value);
-    validateOvereni(true);
+    validateFn(true);
     input.focus();
   }
 
-  function setBirthDateError(show) {
-    const input = document.getElementById('overeni-datum');
+  function setDateFieldError(inputId, msgId, show, errorText, defaultText = '') {
+    const input = document.getElementById(inputId);
     const wrap = input.closest('.ds-input');
-    const msg = document.getElementById('overeni-datum-msg');
+    const msg = document.getElementById(msgId);
 
     wrap.classList.toggle('error', show);
     input.setAttribute('aria-invalid', show ? 'true' : 'false');
     msg.classList.toggle('error', show);
-    msg.textContent = show
-      ? 'Zadejte platné datum ve formátu DD.MM.RRRR.'
-      : 'Např. 14.02.1988';
+    msg.textContent = show ? errorText : defaultText;
+    if (!defaultText) msg.style.display = show ? '' : 'none';
+  }
+
+  function setBirthDateError(show) {
+    setDateFieldError(
+      'overeni-datum',
+      'overeni-datum-msg',
+      show,
+      'Zadejte platné datum ve formátu DD.MM.RRRR.',
+      'Např. 14.02.1988'
+    );
+  }
+
+  function setIncidentDateError(show) {
+    setDateFieldError(
+      'incident-date',
+      'incident-date-msg',
+      show,
+      'Zadejte platné datum události ve formátu DD.MM.RRRR.'
+    );
   }
 
   function validateOvereni(showDateError = false) {
@@ -1819,16 +1948,107 @@
     document.getElementById('btn-overeni-ok').disabled = !ok;
   }
 
-  function validateUdalost() {
+  function validateUdalost(showDateError = false) {
+    const dateValue = document.getElementById('incident-date').value.trim();
+    const dateOk = isValidDateValue(dateValue);
+    const shouldShowDateError = Boolean(dateValue) && !dateOk && (showDateError || dateValue.length === 10);
+
+    setIncidentDateError(shouldShowDateError);
+
+    const picker = document.getElementById('incident-date-picker');
+    if (picker) picker.value = dateOk ? displayToIsoDate(dateValue) : '';
+
     const ok = document.getElementById('udalost-adresa').value.trim() &&
-               document.getElementById('incident-date').value &&
-               document.getElementById('incident-time').value.trim();
+               dateOk &&
+               document.getElementById('incident-time').value.trim() &&
+               document.getElementById('udalost-popis').value.trim();
     document.getElementById('btn-udalost-ok').disabled = !ok;
   }
 
   function validateAiStep() {
     const hasItems = document.querySelectorAll('#dmg-list .dmg-item').length > 0;
     document.getElementById('btn-ai-ok').disabled = !hasItems;
+  }
+
+  const voiceTimers = {};
+
+  function autoResizeTextarea(textarea) {
+    const styles = getComputedStyle(textarea);
+    const min = parseFloat(styles.minHeight) || 72;
+    const max = parseFloat(styles.maxHeight) || 160;
+
+    textarea.style.height = 'auto';
+    const nextHeight = Math.min(Math.max(textarea.scrollHeight, min), max);
+    textarea.style.height = nextHeight + 'px';
+    textarea.style.overflowY = textarea.scrollHeight > max ? 'auto' : 'hidden';
+  }
+
+  function updateTextareaCounter(textareaId, counterId) {
+    const textarea = document.getElementById(textareaId);
+    const counter = document.getElementById(counterId);
+    const max = Number(textarea.getAttribute('maxlength')) || 1000;
+
+    if (textarea.value.length > max) textarea.value = textarea.value.slice(0, max);
+    autoResizeTextarea(textarea);
+    counter.textContent = `${textarea.value.length} / ${max} znaků`;
+  }
+
+  function startVoiceInput(type) {
+    const configs = {
+      incident: {
+        textareaId: 'udalost-popis',
+        counterId: 'udalost-popis-counter',
+        buttonId: 'btn-voice',
+        labelId: 'voice-btn-label',
+        statusId: 'voice-status',
+        defaultLabel: 'Nadiktovat popis události',
+        listeningLabel: 'Probíhá diktování popisu události',
+        dictatedText: 'Praskla nám sklokeramická deska u jedné plotýnky. Nevím přesně kdy, všimli jsme si toho při vaření.'
+      },
+      asset: {
+        textareaId: 'majetek-popis',
+        counterId: 'majetek-popis-counter',
+        buttonId: 'btn-asset-voice',
+        labelId: 'asset-voice-btn-label',
+        statusId: 'asset-voice-status',
+        defaultLabel: 'Nadiktovat seznam a rozměr poškozeného majetku',
+        listeningLabel: 'Probíhá diktování seznamu a rozměru poškozeného majetku',
+        dictatedText: 'Je to sklokeramická deska Mora, klasická šířka asi 60 centimetrů, prasklá u pravé přední plotýnky.'
+      }
+    };
+
+    const config = configs[type];
+    if (!config) return;
+
+    const textarea = document.getElementById(config.textareaId);
+    const btn = document.getElementById(config.buttonId);
+    const label = document.getElementById(config.labelId);
+    const status = document.getElementById(config.statusId);
+
+    if (btn.classList.contains('listening')) return;
+
+    clearTimeout(voiceTimers[type]);
+    btn.classList.add('listening');
+    btn.setAttribute('aria-label', config.listeningLabel);
+    label.textContent = 'Poslouchám…';
+    status.textContent = 'Simulace diktování je spuštěná.';
+
+    voiceTimers[type] = setTimeout(() => {
+      const nextValue = textarea.value.trim()
+        ? `${textarea.value.trim()} ${config.dictatedText}`
+        : config.dictatedText;
+      const max = Number(textarea.getAttribute('maxlength')) || 1000;
+      textarea.value = nextValue.slice(0, max);
+
+      btn.classList.remove('listening');
+      btn.setAttribute('aria-label', config.defaultLabel);
+      label.textContent = 'Namluvit';
+      status.textContent = 'Text byl doplněn z hlasového zadání.';
+      updateTextareaCounter(config.textareaId, config.counterId);
+      if (type === 'incident') validateUdalost();
+      if (type === 'asset') validateAiStep();
+      textarea.focus();
+    }, 1200);
   }
 
   let currentRating = 5;
@@ -1989,6 +2209,10 @@
     if (first) requestAnimationFrame(() => adjustContentPadding(first));
     const birthPicker = document.getElementById('overeni-datum-picker');
     if (birthPicker) birthPicker.max = todayIsoLocal();
+    const incidentPicker = document.getElementById('incident-date-picker');
+    if (incidentPicker) incidentPicker.max = todayIsoLocal();
+    updateTextareaCounter('udalost-popis', 'udalost-popis-counter');
+    updateTextareaCounter('majetek-popis', 'majetek-popis-counter');
     // date intentionally empty — user must choose consciously
   });
 
