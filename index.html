@@ -763,6 +763,48 @@
       flex-shrink: 0;
     }
     .ds-input input::placeholder { color: var(--disabled-txt); }
+    .ds-input.error {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+    .ds-input.error .ds-lbl { color: var(--error); }
+    .ds-input:not(label) .ds-lbl { pointer-events: auto; }
+    .ds-input.with-action {
+      position: relative;
+      padding-right: 56px;
+    }
+    .field-action {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .field-action:active,
+    .field-action:focus-visible {
+      background: rgba(0, 107, 85, .10);
+      outline: none;
+    }
+    .ds-input input.date-picker-native {
+      position: absolute !important;
+      right: 8px;
+      top: 8px;
+      width: 40px !important;
+      height: 40px !important;
+      opacity: 0;
+      pointer-events: none;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
     /* DS textarea variant */
     .ds-input.ds-textarea {
       height: auto;
@@ -793,6 +835,7 @@
       margin-bottom: var(--s);
       padding: 0 2px;
     }
+    .helper-text.error { color: var(--error); }
 
 
     /* ── FILE INPUTS ─────────────────────────── */
@@ -822,7 +865,7 @@
       <div class="step-line pending"></div>
       <div class="step"><div class="step-circle future">6</div></div>
     </div>
-    <h2 class="step-label">Ověření klienta</h2>
+    <h2 class="step-label">Kdo hlásí škodu</h2>
   </div>
   <div class="content">
     <label class="ds-input" style="margin-bottom:var(--xs)">
@@ -833,10 +876,17 @@
       <span class="ds-lbl">Příjmení  *</span>
       <input type="text" id="overeni-prijmeni" autocomplete="family-name" placeholder=" " oninput="validateOvereni()">
     </label>
-    <label class="ds-input">
-      <span class="ds-lbl">Datum narození  *</span>
-      <input type="date" id="overeni-datum" oninput="validateOvereni()">
-    </label>
+    <div class="ds-input with-action">
+      <label class="ds-lbl" for="overeni-datum">Datum narození  *</label>
+      <input type="text" id="overeni-datum" inputmode="decimal" autocomplete="bday" placeholder="DD.MM.RRRR" maxlength="10" aria-describedby="overeni-datum-msg" onbeforeinput="handleDateBeforeInput(event)" onkeydown="handleDateKeydown(event)" oninput="maskDate(this, event); validateOvereni()" onblur="normalizeBirthDate(this); validateOvereni(true)">
+      <button type="button" class="field-action" aria-label="Vybrat datum z kalendáře" onclick="openBirthDatePicker(event)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 3v3M17 3v3M4 9h16M6 5h12a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2z"/>
+        </svg>
+      </button>
+      <input type="date" id="overeni-datum-picker" class="date-picker-native" min="1900-01-01" tabindex="-1" aria-hidden="true" onchange="syncBirthDateFromPicker()">
+    </div>
+    <p class="helper-text" id="overeni-datum-msg" style="margin-top:6px;margin-bottom:0">Např. 14.02.1988</p>
   </div>
   <div class="bottom-nav">
     <button class="btn btn-p" id="btn-overeni-ok" disabled onclick="showScreen('screen-udalost')">Pokračovat</button>
@@ -1470,18 +1520,302 @@
     setTimeout(() => showScreen('screen-ai'), 2800);
   }
 
-  // ── AI step validation ────────────────────────────
-  function maskDate(input) {
-    let v = input.value.replace(/\D/g, '').slice(0, 8);
-    if (v.length >= 5) v = v.slice(0,2) + '.' + v.slice(2,4) + '.' + v.slice(4);
-    else if (v.length >= 3) v = v.slice(0,2) + '.' + v.slice(2);
-    input.value = v;
+  // ── Form validation ──────────────────────────────
+  function normalizeDateChars(value) {
+    return value
+      .replace(/[,/\-\s]/g, '.')
+      .replace(/[^\d.]/g, '')
+      .replace(/\.{2,}/g, '.');
   }
 
-  function validateOvereni() {
+  function isValidMonthNumber(value) {
+    const month = Number(value);
+    return value.length > 0 && month >= 1 && month <= 12;
+  }
+
+  function splitDateParts(rawValue, options = {}) {
+    const value = normalizeDateChars(rawValue);
+    const isDeleting = options.isDeleting === true;
+
+    if (!value.includes('.')) {
+      const digits = value.replace(/\D/g, '').slice(0, 8);
+
+      if (isDeleting || digits.length <= 2) {
+        return {
+          day: digits.slice(0, 2),
+          month: '',
+          year: '',
+          dayDone: !isDeleting && digits.length === 2,
+          monthDone: false
+        };
+      }
+
+      const day = digits.slice(0, 2);
+      const rest = digits.slice(2);
+      let month = '';
+      let year = '';
+
+      if (rest.length <= 1) {
+        month = rest;
+      } else {
+        const twoDigitMonth = rest.slice(0, 2);
+        if (isValidMonthNumber(twoDigitMonth) || twoDigitMonth.startsWith('0')) {
+          month = twoDigitMonth;
+          year = rest.slice(2, 6);
+        } else {
+          month = rest.slice(0, 1);
+          year = rest.slice(1, 5);
+        }
+      }
+
+      return {
+        day,
+        month,
+        year,
+        dayDone: true,
+        monthDone: month.length === 2 || year.length > 0
+      };
+    }
+
+    const dotCount = (value.match(/\./g) || []).length;
+    const rawParts = value.split('.');
+    const rawDay = (rawParts.shift() || '').replace(/\D/g, '');
+    const day = rawDay.slice(0, 2);
+    const dayOverflow = rawDay.slice(2);
+    const rawMonth = dayOverflow + (rawParts.shift() || '').replace(/\D/g, '');
+    const explicitMonthSeparator = dotCount >= 2;
+    let month = '';
+    let year = '';
+
+    if (explicitMonthSeparator) {
+      month = rawMonth.slice(0, 2);
+      year = (rawMonth.slice(2) + rawParts.join('').replace(/\D/g, '')).slice(0, 4);
+    } else if (rawMonth.length <= 1) {
+      month = rawMonth;
+    } else {
+      const twoDigitMonth = rawMonth.slice(0, 2);
+      if (isValidMonthNumber(twoDigitMonth) || twoDigitMonth.startsWith('0')) {
+        month = twoDigitMonth;
+        year = rawMonth.slice(2, 6);
+      } else {
+        month = rawMonth.slice(0, 1);
+        year = rawMonth.slice(1, 5);
+      }
+    }
+
+    return {
+      day,
+      month,
+      year,
+      dayDone: value.includes('.') || (!isDeleting && day.length === 2),
+      monthDone: explicitMonthSeparator || month.length === 2 || year.length > 0
+    };
+  }
+
+  function formatDateParts(parts) {
+    let formatted = parts.day;
+    if (parts.dayDone) formatted += '.';
+    formatted += parts.month;
+    if (parts.monthDone) formatted += '.';
+    formatted += parts.year;
+    return formatted.slice(0, 10);
+  }
+
+  function caretFromDigitCount(value, digitCount, moveAfterNextSeparator) {
+    if (digitCount <= 0) return 0;
+
+    let seen = 0;
+    let pos = value.length;
+
+    for (let i = 0; i < value.length; i++) {
+      if (/\d/.test(value[i])) seen++;
+      if (seen === digitCount) {
+        pos = i + 1;
+        break;
+      }
+    }
+
+    if (moveAfterNextSeparator && value[pos] === '.') pos++;
+    return pos;
+  }
+
+  function maskDate(input, event = null) {
+    const inputType = event?.inputType || '';
+    const isDeleting = inputType.startsWith('delete');
+    const caret = input.selectionStart ?? input.value.length;
+    const isCaretAtEnd = caret >= input.value.length;
+    const digitsBeforeCaret = input.value.slice(0, caret).replace(/\D/g, '').length;
+    const formatted = formatDateParts(splitDateParts(input.value, { isDeleting }));
+
+    input.value = formatted;
+
+    const nextCaret = isCaretAtEnd ? formatted.length : caretFromDigitCount(formatted, digitsBeforeCaret, !isDeleting);
+    requestAnimationFrame(() => input.setSelectionRange(nextCaret, nextCaret));
+  }
+
+  function handleDateBeforeInput(event) {
+    if (event.inputType !== 'insertText' || !/[.,/\-\s]/.test(event.data || '')) return;
+
+    const input = event.target;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    if (start === null || end === null || start !== end) return;
+
+    const before = normalizeDateChars(input.value.slice(0, start));
+    const after = input.value.slice(end);
+
+    if (/^\d{1,2}$/.test(before)) {
+      event.preventDefault();
+      input.value = `${before}.${after}`.slice(0, 10);
+      const caret = Math.min(before.length + 1, input.value.length);
+      input.setSelectionRange(caret, caret);
+      validateOvereni();
+      return;
+    }
+
+    if (/^\d{1,2}\.\d{1,2}$/.test(before)) {
+      event.preventDefault();
+      input.value = `${before}.${after}`.slice(0, 10);
+      const caret = Math.min(before.length + 1, input.value.length);
+      input.setSelectionRange(caret, caret);
+      validateOvereni();
+      return;
+    }
+
+    if (before.endsWith('.')) {
+      event.preventDefault();
+      input.setSelectionRange(start, start);
+    }
+  }
+
+  function handleDateKeydown(event) {
+    if (event.key !== 'Backspace' && event.key !== 'Delete') return;
+
+    const input = event.target;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    if (start === null || end === null || start !== end) return;
+
+    const removeIndex = event.key === 'Backspace' ? start - 1 : start;
+    if (removeIndex < 0 || input.value[removeIndex] !== '.') return;
+
+    event.preventDefault();
+    input.value = input.value.slice(0, removeIndex) + input.value.slice(removeIndex + 1);
+    input.setSelectionRange(removeIndex, removeIndex);
+    maskDate(input, { inputType: event.key === 'Backspace' ? 'deleteContentBackward' : 'deleteContentForward' });
+    validateOvereni();
+  }
+
+  function parseBirthDate(value) {
+    const normalized = value.trim().replace(/[,/\-\s]/g, '.').replace(/\.{2,}/g, '.');
+    const match = normalized.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (!match) return null;
+
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+
+    if (
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (year < 1900 || date > today) return null;
+
+    return { day, month, year, date };
+  }
+
+  function isValidBirthDate(value) {
+    return Boolean(parseBirthDate(value));
+  }
+
+  function formatBirthDateDisplay(value) {
+    const parsed = parseBirthDate(value);
+    if (!parsed) return value;
+    return `${String(parsed.day).padStart(2, '0')}.${String(parsed.month).padStart(2, '0')}.${parsed.year}`;
+  }
+
+  function normalizeBirthDate(input) {
+    if (isValidBirthDate(input.value)) input.value = formatBirthDateDisplay(input.value);
+  }
+
+  function displayToIsoDate(value) {
+    const parsed = parseBirthDate(value);
+    if (!parsed) return '';
+    return `${parsed.year}-${String(parsed.month).padStart(2, '0')}-${String(parsed.day).padStart(2, '0')}`;
+  }
+
+  function isoToDisplayDate(value) {
+    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return '';
+    return `${match[3]}.${match[2]}.${match[1]}`;
+  }
+
+  function todayIsoLocal() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  function openBirthDatePicker(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const input = document.getElementById('overeni-datum');
+    const picker = document.getElementById('overeni-datum-picker');
+    const isoDate = displayToIsoDate(input.value.trim());
+
+    if (isoDate) picker.value = isoDate;
+
+    if (typeof picker.showPicker === 'function') {
+      picker.showPicker();
+    } else {
+      picker.click();
+    }
+  }
+
+  function syncBirthDateFromPicker() {
+    const picker = document.getElementById('overeni-datum-picker');
+    const input = document.getElementById('overeni-datum');
+
+    input.value = isoToDisplayDate(picker.value);
+    validateOvereni(true);
+    input.focus();
+  }
+
+  function setBirthDateError(show) {
+    const input = document.getElementById('overeni-datum');
+    const wrap = input.closest('.ds-input');
+    const msg = document.getElementById('overeni-datum-msg');
+
+    wrap.classList.toggle('error', show);
+    input.setAttribute('aria-invalid', show ? 'true' : 'false');
+    msg.classList.toggle('error', show);
+    msg.textContent = show
+      ? 'Zadejte platné datum ve formátu DD.MM.RRRR.'
+      : 'Např. 14.02.1988';
+  }
+
+  function validateOvereni(showDateError = false) {
+    const dateValue = document.getElementById('overeni-datum').value.trim();
+    const dateOk = isValidBirthDate(dateValue);
+    const shouldShowDateError = Boolean(dateValue) && !dateOk && (showDateError || dateValue.length === 10);
+
+    setBirthDateError(shouldShowDateError);
+
+    const picker = document.getElementById('overeni-datum-picker');
+    if (picker) picker.value = dateOk ? displayToIsoDate(dateValue) : '';
+
     const ok = document.getElementById('overeni-jmeno').value.trim() &&
                document.getElementById('overeni-prijmeni').value.trim() &&
-               document.getElementById('overeni-datum').value;
+               dateOk;
     document.getElementById('btn-overeni-ok').disabled = !ok;
   }
 
@@ -1653,6 +1987,8 @@
   window.addEventListener('load', () => {
     const first = document.querySelector('.screen.active');
     if (first) requestAnimationFrame(() => adjustContentPadding(first));
+    const birthPicker = document.getElementById('overeni-datum-picker');
+    if (birthPicker) birthPicker.max = todayIsoLocal();
     // date intentionally empty — user must choose consciously
   });
 
