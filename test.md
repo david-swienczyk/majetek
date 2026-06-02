@@ -169,10 +169,20 @@ Doporučený zápis poznámky:
 
 ---
 
-## Krok 6 — Návrh plnění
+## Krok 6 — Částka k vyplacení
 
+- [ ] Nadpis kroku je „Částka k vyplacení“.
 - [ ] Návrh částky je viditelný.
+- [ ] V rozpisu je hlavní řádek „Škoda celkem“ a druhý řádek „Sklokeramická deska — výměna“.
+- [ ] Spoluúčast má vysvětlení „(tuto část škody platíte vy)“.
+- [ ] Součtový řádek má label „Celkem“, ne „Celkem k vyplacení“.
+- [ ] Sekce pomoci se jmenuje „Nerozumíte částce?“.
+- [ ] Po rozkliknutí sekce pomoci je jako první a vizuálně primární možnost chat, ne callback.
+- [ ] Callback je sekundární, menší alternativa a chová se stejně jako na kroku 5.
+- [ ] Edit button u telefonu otevře pole pro úpravu čísla a po uložení se nové číslo propíše do zobrazení.
+- [ ] Primární chat CTA má text „Otevřít chat“ a pod CTA se nezobrazuje zbytečný status typu „Chat je připravený k otevření“.
 - [ ] Účet pro výplatu je viditelný.
+- [ ] Label účtu je „Číslo účtu (na který jsme od vás dostali pojistné)“.
 - [ ] Editace účtu jde otevřít, uložit a zavřít.
 - [ ] Změněný účet se propíše do potvrzení.
 - [ ] Odeslání hlášení vede na potvrzovací obrazovku.

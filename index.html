@@ -1509,7 +1509,7 @@
       <div class="step-line done"></div>
       <div class="step"><div class="step-circle current">6</div></div>
     </div>
-    <h2 class="step-label">Návrh plnění</h2>
+    <h2 class="step-label">Částka k vyplacení</h2>
   </div>
 
   <div class="content">
@@ -1518,8 +1518,8 @@
 
       <div class="pay-item">
         <div>
-          <p class="pay-name">Sklokeramická deska — výměna</p>
-          <p class="pay-sub">Prasklá deska, varná zóna č. 2</p>
+          <p class="pay-name">Škoda celkem</p>
+          <p class="pay-sub">Sklokeramická deska — výměna</p>
         </div>
         <span class="pay-amount">12 400 Kč</span>
       </div>
@@ -1527,14 +1527,14 @@
       <div class="pay-item">
         <div>
           <p class="pay-name">Spoluúčast</p>
-          <p class="pay-sub">Dle podmínek pojistky</p>
+          <p class="pay-sub">(tuto část škody platíte vy)</p>
         </div>
         <span class="pay-amount neg">−2 000 Kč</span>
       </div>
 
       <div class="div" style="margin-bottom:0"></div>
       <div class="pay-total">
-        <span class="pay-total-lbl">Celkem k vyplacení</span>
+        <span class="pay-total-lbl">Celkem</span>
         <span class="pay-total-amt" id="pay-total-amt">10 400 Kč</span>
       </div>
     </div>
@@ -1547,28 +1547,52 @@
           </svg>
         </div>
         <div class="liq-texts">
-          <p class="liq-title">Nerozumíte výši plnění?</p>
-          <p class="liq-sub">Likvidátor vám rozpis vysvětlí.</p>
+          <p class="liq-title">Nerozumíte částce?</p>
         </div>
         <svg class="liq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div class="liq-expand" id="liq-5-expand">
-        <div class="liq-phone-row">
-          <div>
-            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
-            <p class="liq-phone-num">601 601 601</p>
+        <div class="liq-chat-card">
+          <div class="liq-chat-main">
+            <p class="liq-option-label">Doporučeně</p>
+            <p class="liq-chat-title">Poradit se přes chat</p>
           </div>
-          <button class="btn btn-p" style="width:auto;padding:0 var(--s);height:44px;font-size:14px" onclick="requestCallback('liq-5')">Zavolejte mi</button>
+          <button class="btn btn-p liq-chat-btn" id="liq-5-chat-btn" type="button" onclick="requestChat('liq-5')">Otevřít chat</button>
         </div>
+        <p class="liq-option-label">Nebo vám zavoláme</p>
+        <div class="liq-phone-row">
+          <div class="liq-phone-main">
+            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
+            <div class="liq-phone-num-line">
+              <p class="liq-phone-num" id="liq-5-phone-display">721 234 951</p>
+              <button class="liq-edit-btn" type="button" onclick="toggleLiqPhoneEdit('liq-5')" aria-label="Upravit telefonní číslo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                </svg>
+                Upravit
+              </button>
+            </div>
+            <p class="liq-phone-helper">(číslo uvedené na smlouvě)</p>
+          </div>
+        </div>
+        <div class="liq-phone-edit" id="liq-5-phone-edit">
+          <label class="ds-input" for="liq-5-phone-input">
+            <span class="ds-lbl">Telefonní číslo</span>
+            <input type="text" id="liq-5-phone-input" value="721 234 951" inputmode="tel">
+          </label>
+          <button class="btn btn-s" type="button" onclick="saveLiqPhone('liq-5')">Uložit</button>
+        </div>
+        <button class="btn btn-s liq-call-btn" type="button" onclick="requestCallback('liq-5')">Zavolejte mi</button>
         <div class="liq-called" id="liq-5-called">
           <div class="liq-called-ico">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12l5 5 9-10"/>
             </svg>
           </div>
-          <p class="liq-called-txt">Likvidátor se vám ozve do <strong>5 minut</strong>.</p>
+          <p class="liq-called-txt">Obvykle se vám ozve do <strong>5 minut</strong>.</p>
         </div>
       </div>
     </div>
@@ -1577,7 +1601,7 @@
     <div class="account-block">
       <div class="account-row">
         <div>
-          <p class="account-lbl">Číslo účtu</p>
+          <p class="account-lbl">Číslo účtu (na který jsme od vás dostali pojistné)</p>
           <p class="account-num" id="account-display">123456789/0300</p>
         </div>
         <button class="btn-change" onclick="toggleAccountEdit()">Změnit</button>
