@@ -160,7 +160,7 @@
       background: var(--white);
       border-radius: var(--r-card);
       border: 1px solid var(--border-light);
-      padding: var(--s);
+      padding: 10px var(--xs);
       margin-bottom: var(--s);
     }
     .card-title {
@@ -169,7 +169,7 @@
       color: var(--body-sec);
       text-transform: uppercase;
       letter-spacing: .1em;
-      margin-bottom: var(--xs);
+      margin-bottom: 6px;
     }
     .section-intro {
       margin: 0 2px var(--xs);
@@ -298,18 +298,21 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--white);
+      background: transparent;
       color: var(--dark);
-      border: 1.5px solid var(--dark);
-      border-radius: var(--r-btn);
-      padding: 0 var(--s);
-      height: 44px;
+      border: none;
+      border-radius: 0;
+      padding: 4px 0;
+      height: auto;
       font-family: var(--font);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      letter-spacing: .04em;
+      letter-spacing: 0;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
+    .btn-add:active { text-decoration: none; }
 
     /* ── BUTTONS ─────────────────────────────── */
     .btn {
@@ -348,6 +351,7 @@
     }
     .btn-s:hover  { border-width: 2px; }
     .btn-s:active { border-width: 2px; }
+    .btn-s:disabled { background: var(--disabled-bg); color: var(--disabled-txt); border-color: var(--disabled-bg); cursor: not-allowed; }
 
     .btn-t {
       background: transparent;
@@ -451,21 +455,21 @@
     .dmg-item {
       display: flex;
       align-items: flex-start;
-      gap: var(--xs);
-      padding: 13px 0;
+      gap: 12px;
+      padding: 6px 0;
       border-bottom: 1px solid var(--border-light);
     }
     .dmg-item:last-child { border-bottom: none; }
     .dmg-icon { width: 24px; height: 24px; flex-shrink: 0; margin-top: 2px; }
     .dmg-name { font-size: 16px; line-height: 1.3; color: var(--dark); }
-    .dmg-sub  { font-size: 13px; color: var(--body-sec); margin-top: 3px; }
+    .dmg-sub  { font-size: 13px; color: var(--body-sec); margin-top: 2px; }
 
     /* ── PAYOUT LIST ─────────────────────────── */
     .pay-item {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      padding: 13px 0;
+      padding: 8px 0;
       border-bottom: 1px solid var(--border-light);
     }
     .pay-item:last-child { border-bottom: none; }
@@ -592,8 +596,8 @@
       font-size: 15px;
       font-weight: 600;
       color: var(--dark);
-      margin-bottom: var(--xs);
-      margin-top: var(--s);
+      margin-bottom: 6px;
+      margin-top: var(--xs);
     }
     .sec-ttl:first-child { margin-top: 0; }
 
@@ -601,7 +605,7 @@
     .div { height: 1px; background: var(--border-light); margin: var(--xs) 0; }
 
     /* ── DAMAGE ITEMS (read-only list) ──────── */
-    .dmg-view { display: flex; align-items: flex-start; gap: var(--xs); width: 100%; }
+    .dmg-view { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
     .dmg-edit-btn {
       background: none; border: none; cursor: pointer;
       padding: 4px; margin-left: auto; flex-shrink: 0;
@@ -615,7 +619,7 @@
       background: none; border: none; cursor: pointer;
       color: var(--dark); font-family: var(--font);
       font-size: 14px; font-weight: 600;
-      padding: var(--xs) 0 4px;
+      padding: 8px 0 0;
       text-decoration: underline; text-underline-offset: 2px;
     }
     .btn-add-dmg:active { text-decoration: none; }
@@ -703,13 +707,13 @@
       border: 1px solid var(--border-light);
       border-radius: var(--r-card);
       overflow: hidden;
-      margin-bottom: var(--s);
+      margin-bottom: var(--xs);
     }
     .liq-trigger {
       display: flex;
       align-items: center;
-      gap: var(--xs);
-      padding: var(--xs);
+      gap: 12px;
+      padding: 12px var(--xs);
       cursor: pointer;
       user-select: none;
       background: var(--white);
@@ -717,17 +721,18 @@
     }
     .liq-trigger:active { background: var(--page-bg); }
     .liq-ico {
-      width: 40px; height: 40px;
+      width: 36px; height: 36px;
       border-radius: 50%;
       background: var(--light-bg);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
+    .liq-ico svg { width: 18px; height: 18px; }
     .liq-texts { flex: 1; }
     .liq-title { font-size: 15px; font-weight: 600; color: var(--dark); line-height: 1.3; }
     .liq-sub   { font-size: 13px; color: var(--body-sec); margin-top: 3px; line-height: 1.35; }
     .liq-chevron {
-      width: 20px; height: 20px;
+      width: 18px; height: 18px;
       color: var(--body-sec);
       flex-shrink: 0;
       transition: transform .2s;
@@ -735,21 +740,91 @@
     .liq-block.open .liq-chevron { transform: rotate(180deg); }
     .liq-expand {
       display: none;
-      padding: var(--xs);
+      padding: 12px var(--xs);
       background: var(--page-bg);
       border-top: 1px solid var(--border-light);
       flex-direction: column;
-      gap: var(--xs);
+      gap: 8px;
     }
     .liq-block.open .liq-expand { display: flex; }
     .liq-phone-row {
       display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--xs);
+    }
+    .liq-phone-main { flex: 1; min-width: 0; }
+    .liq-phone-lbl { font-size: 12px; color: var(--body-sec); margin-bottom: 3px; }
+    .liq-phone-num-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .liq-phone-num { font-size: 17px; font-weight: 600; color: var(--dark); }
+    .liq-phone-helper { font-size: 12px; color: var(--body-sec); margin-top: 2px; line-height: 1.35; }
+    .liq-edit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: none;
+      background: transparent;
+      color: var(--dark);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      cursor: pointer;
+      padding: 2px 0;
+      flex-shrink: 0;
+    }
+    .liq-edit-btn svg { width: 15px; height: 15px; }
+    .liq-phone-edit {
+      display: none;
+      grid-template-columns: 1fr auto;
+      gap: var(--xxs);
+      align-items: center;
+    }
+    .liq-phone-edit.open { display: grid; }
+    .liq-phone-edit .ds-input { height: 52px; margin: 0; }
+    .liq-phone-edit .btn { width: auto; height: 40px; padding: 0 var(--xs); font-size: 13px; }
+    .liq-call-btn {
+      width: auto;
+      align-self: flex-start;
+      height: 40px;
+      padding: 0 var(--xs);
+      font-size: 13px;
+    }
+    .liq-option-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--body-sec);
+      margin-top: 0;
+    }
+    .liq-chat-row {
+      display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--xxs);
+      gap: var(--xs);
+      padding-top: 2px;
     }
-    .liq-phone-lbl { font-size: 12px; color: var(--body-sec); margin-bottom: 2px; }
-    .liq-phone-num { font-size: 17px; font-weight: 600; color: var(--dark); }
+    .liq-chat-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--xs);
+      padding: 10px 12px;
+      border-radius: 18px;
+      border: 1px solid var(--border-light);
+      background: var(--white);
+    }
+    .liq-chat-main { flex: 1; min-width: 0; }
+    .liq-chat-card .liq-option-label { margin-bottom: 4px; }
+    .liq-chat-title { font-size: 15px; font-weight: 600; color: var(--dark); line-height: 1.3; }
+    .liq-chat-btn { width: auto; height: 40px; padding: 0 var(--xs); font-size: 13px; }
     .liq-called {
       display: none;
       align-items: center;
@@ -758,7 +833,7 @@
     }
     .liq-called.visible { display: flex; }
     .liq-called-ico {
-      width: 32px; height: 32px; border-radius: 50%;
+      width: 28px; height: 28px; border-radius: 50%;
       background: var(--success-bg); flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
     }
@@ -1327,17 +1402,17 @@
       <div class="step-line pending"></div>
       <div class="step"><div class="step-circle future">6</div></div>
     </div>
-    <h2 class="step-label">Váš nárok na krytí</h2>
+    <h2 class="step-label">Přehled škod</h2>
   </div>
 
   <div class="content">
     <div id="narok-covered-wrap">
-      <p class="sec-ttl">Kryté škody</p>
+      <p class="sec-ttl">Pojištěné škody</p>
       <div class="card" id="narok-covered"></div>
     </div>
 
     <div id="narok-uncovered-wrap">
-      <p class="sec-ttl">Nekryté škody</p>
+      <p class="sec-ttl">Nepojištěné škody</p>
       <div class="card" id="narok-uncovered"></div>
     </div>
 
@@ -1354,28 +1429,52 @@
           </svg>
         </div>
         <div class="liq-texts">
-          <p class="liq-title">Nejste si jistí nárokem?</p>
-          <p class="liq-sub">Likvidátor vám podmínky vysvětlí.</p>
+          <p class="liq-title">Potřebujete rychlou pomoc?</p>
         </div>
         <svg class="liq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div class="liq-expand" id="liq-4-expand">
-        <div class="liq-phone-row">
-          <div>
-            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
-            <p class="liq-phone-num">601 601 601</p>
+        <div class="liq-chat-card">
+          <div class="liq-chat-main">
+            <p class="liq-option-label">Doporučeně</p>
+            <p class="liq-chat-title">Poradit se přes chat</p>
           </div>
-          <button class="btn btn-p" style="width:auto;padding:0 var(--s);height:44px;font-size:14px" onclick="requestCallback('liq-4')">Zavolejte mi</button>
+          <button class="btn btn-p liq-chat-btn" id="liq-4-chat-btn" type="button" onclick="requestChat('liq-4')">Otevřít chat</button>
         </div>
+        <p class="liq-option-label">Nebo vám zavoláme</p>
+        <div class="liq-phone-row">
+          <div class="liq-phone-main">
+            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
+            <div class="liq-phone-num-line">
+              <p class="liq-phone-num" id="liq-4-phone-display">721 234 951</p>
+              <button class="liq-edit-btn" type="button" onclick="toggleLiqPhoneEdit('liq-4')" aria-label="Upravit telefonní číslo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                </svg>
+                Upravit
+              </button>
+            </div>
+            <p class="liq-phone-helper">(číslo uvedené na smlouvě)</p>
+          </div>
+        </div>
+        <div class="liq-phone-edit" id="liq-4-phone-edit">
+          <label class="ds-input" for="liq-4-phone-input">
+            <span class="ds-lbl">Telefonní číslo</span>
+            <input type="text" id="liq-4-phone-input" value="721 234 951" inputmode="tel">
+          </label>
+          <button class="btn btn-s" type="button" onclick="saveLiqPhone('liq-4')">Uložit</button>
+        </div>
+        <button class="btn btn-s liq-call-btn" type="button" onclick="requestCallback('liq-4')">Zavolejte mi</button>
         <div class="liq-called" id="liq-4-called">
           <div class="liq-called-ico">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12l5 5 9-10"/>
             </svg>
           </div>
-          <p class="liq-called-txt">Likvidátor se vám ozve do <strong>5 minut</strong>.</p>
+          <p class="liq-called-txt">Obvykle se vám ozve do <strong>5 minut</strong>.</p>
         </div>
       </div>
     </div>
@@ -2354,10 +2453,48 @@
   // ── Likvidátor inline expand ──────────────────────
   function requestCallback(id) {
     const called = document.getElementById(id + '-called');
-    const btn = called.previousElementSibling.querySelector('button');
+    const btn = document.querySelector(`#${id} .liq-call-btn`) ||
+      called.previousElementSibling?.querySelector('button');
     called.classList.add('visible');
-    btn.disabled = true;
-    btn.textContent = 'Objednáno';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'Objednáno';
+    }
+    const screen = document.getElementById(id).closest('.screen');
+    requestAnimationFrame(() => adjustContentPadding(screen));
+  }
+
+  function toggleLiqPhoneEdit(id) {
+    const edit = document.getElementById(id + '-phone-edit');
+    if (!edit) return;
+    edit.classList.toggle('open');
+    if (edit.classList.contains('open')) {
+      const input = document.getElementById(id + '-phone-input');
+      setTimeout(() => input?.focus(), 0);
+    }
+    const screen = document.getElementById(id).closest('.screen');
+    requestAnimationFrame(() => adjustContentPadding(screen));
+  }
+
+  function saveLiqPhone(id) {
+    const input = document.getElementById(id + '-phone-input');
+    const display = document.getElementById(id + '-phone-display');
+    const edit = document.getElementById(id + '-phone-edit');
+    if (!input || !display) return;
+    const value = input.value.trim();
+    if (value) display.textContent = value;
+    edit?.classList.remove('open');
+    const screen = document.getElementById(id).closest('.screen');
+    requestAnimationFrame(() => adjustContentPadding(screen));
+  }
+
+  function requestChat(id) {
+    const btn = document.getElementById(id + '-chat-btn');
+    if (btn) {
+      btn.textContent = 'Otevřít chat';
+    }
+    const screen = document.getElementById(id).closest('.screen');
+    requestAnimationFrame(() => adjustContentPadding(screen));
   }
 
   function toggleLiq(id) {

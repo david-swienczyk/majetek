@@ -117,6 +117,7 @@ Doporučený zápis poznámky:
 - [ ] Upload fotky zobrazí obrázkový náhled ve správné sekci.
 - [ ] Upload videa zobrazí video náhled / video badge ve správné sekci.
 - [ ] Lze přidat více souborů do každé sekce.
+- [ ] Akce `Přidat další foto/video` je terciální/link-style, ne výrazný outline button.
 - [ ] Počet souborů se správně aktualizuje v každé sekci.
 - [ ] Odebrání posledního souboru z jedné ze sekcí znovu disabled CTA.
 
@@ -148,13 +149,23 @@ Doporučený zápis poznámky:
 
 ---
 
-## Krok 5 — Nárok na krytí
+## Krok 5 — Přehled škod
 
-- [ ] Kryté položky se zobrazí v sekci krytých škod.
-- [ ] Nekryté položky se zobrazí v sekci mimo krytí.
+- [ ] Nadpis kroku je „Přehled škod“.
+- [ ] Karty škod jsou kompaktní na výšku, ale položky zůstávají čitelné a oddělené.
+- [ ] Kryté položky se zobrazí v sekci `Pojištěné škody`.
+- [ ] Nekryté položky se zobrazí v sekci `Nepojištěné škody`.
 - [ ] Ručně přidané / čekající položky se zobrazí ve správné sekci.
 - [ ] „Chci vědět více“ otevře info bottom sheet.
 - [ ] Info bottom sheet jde zavřít.
+- [ ] Sekce rychlé pomoci má zavřený text „Potřebujete rychlou pomoc?“ a nezobrazuje druhý řádek o likvidátorovi.
+- [ ] Po rozkliknutí rychlé pomoci je jako první a vizuálně primární možnost chat, ne callback.
+- [ ] Callback je sekundární, menší alternativa, aby UI zbytečně nenavádělo k dražšímu telefonnímu kanálu.
+- [ ] Po rozkliknutí rychlé pomoci se zobrazí „Zavoláme vám na číslo“, číslo `721 234 951` a helper „(číslo uvedené na smlouvě)“.
+- [ ] Edit button je vizuálně přímo u telefonního čísla, ne jako akce celé sekce.
+- [ ] Edit button u telefonu otevře pole pro úpravu čísla a po uložení se nové číslo propíše do zobrazení.
+- [ ] Sekundární CTA „Zavolejte mi“ po kliknutí přepne stav na objednáno a zobrazí potvrzení „Obvykle se vám ozve do 5 minut.“
+- [ ] Primární chat CTA má text „Otevřít chat“, text CTA se po kliknutí nemění na „Chat otevřen“ a pod CTA se nezobrazuje zbytečný status typu „Chat je připravený k otevření“.
 
 ---
 
