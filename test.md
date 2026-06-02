@@ -66,6 +66,8 @@ Doporučený zápis poznámky:
 ### Datum narození — výběr z kalendáře
 
 - [ ] Ikona kalendáře otevře nativní date picker, pokud ho prohlížeč podporuje.
+- [ ] Na mobilu tapnutí na ikonovou část kalendáře otevře nativní date picker.
+- [ ] Na mobilu tapnutí do textové části pole data narození pořád aktivuje ruční zadání klávesnicí.
 - [ ] Výběr data z pickeru se propíše do textového pole jako `DD.MM.RRRR`.
 - [ ] Po výběru platného data je CTA enabled, pokud jsou vyplněná i ostatní povinná pole.
 - [ ] Ručně zadané platné datum se synchronizuje do pickeru.
@@ -82,6 +84,8 @@ Doporučený zápis poznámky:
 - [ ] Adresa jde zadat přes klávesnici.
 - [ ] Datum události jde zadat ručně jako `DD.MM.RRRR`.
 - [ ] Datum události jde vybrat přes ikonu kalendáře.
+- [ ] Na mobilu tapnutí na ikonovou část kalendáře u data události otevře nativní date picker.
+- [ ] Na mobilu tapnutí do textové části data události pořád aktivuje ruční zadání klávesnicí.
 - [ ] Postupné psaní data události `31.3.` ponechá hodnotu `31.3.`.
 - [ ] Postupné psaní data události `31.3.1990` je validní a po opuštění pole se normalizuje na `31.03.1990`.
 - [ ] Neplatné datum události `31.02.2010` zobrazí error a CTA zůstane disabled.

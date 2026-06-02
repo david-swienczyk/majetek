@@ -1180,6 +1180,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      z-index: 1;
     }
     .field-action:active,
     .field-action:focus-visible {
@@ -1189,13 +1190,16 @@
     .ds-input input.date-picker-native {
       position: absolute !important;
       right: 8px;
-      top: 8px;
+      top: 50%;
+      transform: translateY(-50%);
       width: 40px !important;
       height: 40px !important;
       opacity: 0;
-      pointer-events: none;
+      pointer-events: auto;
       padding: 0 !important;
       margin: 0 !important;
+      cursor: pointer;
+      z-index: 2;
     }
     /* DS textarea variant */
     .ds-input.ds-textarea {
