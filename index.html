@@ -171,6 +171,21 @@
       letter-spacing: .1em;
       margin-bottom: var(--xs);
     }
+    .section-intro {
+      margin: 0 2px var(--xs);
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .section-helper {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--body-sec);
+    }
 
     /* ── UPLOAD ZONE ─────────────────────────── */
     .upload-group {
@@ -1201,7 +1216,7 @@
 
 
 <!-- ╔══════════════════════════════════════════╗
-     ║  SCREEN 3 — AI výsledky                  ║
+     ║  SCREEN 4 — Poškozené věci                  ║
      ╚══════════════════════════════════════════╝ -->
 <div class="screen" id="screen-ai">
   <div class="header">
@@ -1219,7 +1234,7 @@
       <div class="step-line pending"></div>
       <div class="step"><div class="step-circle future">6</div></div>
     </div>
-    <h2 class="step-label">Nalezená poškození</h2>
+    <h2 class="step-label">Poškozené věci</h2>
   </div>
 
   <div class="content">
@@ -1230,21 +1245,6 @@
       <span class="ib-text">AI analýza dokončena. Zkontrolujte, zda výsledky odpovídají skutečnosti, a případně doplňte detaily.</span>
     </div>
 
-
-    <div class="ds-input ds-textarea with-voice">
-      <label class="ds-lbl" for="majetek-popis">Seznam a rozměr poškozeného majetku  *</label>
-      <textarea id="majetek-popis" maxlength="1000" oninput="updateTextareaCounter('majetek-popis', 'majetek-popis-counter')"></textarea>
-      <button type="button" class="voice-btn" id="btn-asset-voice" onclick="startVoiceInput('asset')" aria-controls="majetek-popis" aria-label="Nadiktovat seznam a rozměr poškozeného majetku">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/>
-          <path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>
-        </svg>
-        <span id="asset-voice-btn-label">Namluvit</span>
-      </button>
-      <span class="textarea-counter" id="majetek-popis-counter">0 / 1000 znaků</span>
-    </div>
-    <p class="voice-status" id="asset-voice-status" aria-live="polite"></p>
-    <p class="helper-text" style="margin-top:6px">Např. „Sklokeramická deska Mora, cca 60 × 52 cm."</p>
 
     <div class="card" style="padding-bottom: var(--xs)">
       <p class="card-title">Co jsme našli na fotce</p>
@@ -1277,6 +1277,25 @@
         Přidat poškození
       </button>
     </div>
+    <div class="section-intro">
+      <h3 class="section-title">Doplňte informace o poškozené věci</h3>
+      <p class="section-helper">Stačí značka, typ a přibližný rozměr. Pokud nevíte přesně, napište odhad.</p>
+    </div>
+    <div class="ds-input ds-textarea with-voice">
+      <label class="ds-lbl" for="majetek-popis">Seznam a rozměr  *</label>
+      <textarea id="majetek-popis" maxlength="1000" oninput="updateTextareaCounter('majetek-popis', 'majetek-popis-counter')"></textarea>
+      <button type="button" class="voice-btn" id="btn-asset-voice" onclick="startVoiceInput('asset')" aria-controls="majetek-popis" aria-label="Nadiktovat seznam a rozměr poškozeného majetku">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/>
+          <path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>
+        </svg>
+        <span id="asset-voice-btn-label">Namluvit</span>
+      </button>
+      <span class="textarea-counter" id="majetek-popis-counter">0 / 1000 znaků</span>
+    </div>
+    <p class="voice-status" id="asset-voice-status" aria-live="polite"></p>
+    <p class="helper-text" style="margin-top:6px">Např. „Sklokeramická deska Mora, cca 60 × 52 cm."</p>
+
 
   </div>
 

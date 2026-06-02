@@ -126,7 +126,12 @@ Doporučený zápis poznámky:
 
 - [ ] Loading obrazovka se zobrazí po pokračování z dokumentace škody.
 - [ ] Po loadingu se zobrazí výsledky AI analýzy.
+- [ ] Nadpis kroku je „Poškozené věci“.
 - [ ] Pole `Seznam a rozměr poškozeného majetku *` je zobrazené na 4. kroku.
+- [ ] Pole `Seznam a rozměr poškozeného majetku *` je pod kartou `Co jsme našli na fotce`.
+- [ ] Nad polem je sekční nadpis `Doplňte informace o poškozené věci`.
+- [ ] Sekční helper říká, že stačí značka, typ a přibližný rozměr / odhad.
+- [ ] Textarea má zkrácený label `Seznam a rozměr *`.
 - [ ] Pole `Seznam a rozměr poškozeného majetku *` zatím neblokuje CTA 4. kroku; chování se bude řešit později.
 - [ ] Pole `Seznam a rozměr poškozeného majetku *` nepoužívá duplicitní placeholder; instrukce je řešená labelem a helperem.
 - [ ] Pole `Seznam a rozměr poškozeného majetku *` má helper s příkladem sklokeramické desky Mora.
