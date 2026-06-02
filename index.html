@@ -512,6 +512,173 @@
     .account-edit { display: none; margin-top: var(--xs); }
     .account-edit.open { display: block; }
 
+    /* ── RESPONSIVE GRID — DIRECT SJEDNAVAČ ─── */
+    @media (min-width: 769px) {
+      body {
+        justify-content: stretch;
+      }
+
+      .app {
+        max-width: none;
+        min-height: 100vh;
+      }
+
+      .screen {
+        width: 100%;
+      }
+
+      .header {
+        padding: var(--s) 0 0;
+      }
+
+      .product-name,
+      .stepper,
+      .step-label {
+        width: 100%;
+        max-width: 484px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .step-label {
+        padding: 0;
+      }
+
+      .step {
+        flex: 0 0 32px;
+      }
+
+      .step-line {
+        flex: 1;
+        margin: 0;
+      }
+
+      .content {
+        width: 100%;
+        max-width: 484px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .bottom-nav {
+        max-width: 484px;
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .bs-sheet {
+        max-width: 484px;
+      }
+
+      .ok-center,
+      .load-center {
+        width: 100%;
+        max-width: 484px;
+        align-self: center;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .product-name,
+      .step-label,
+      .stepper,
+      .content,
+      .bottom-nav,
+      .bs-sheet,
+      .ok-center,
+      .load-center {
+        max-width: 640px;
+      }
+
+      .content {
+        flex: 0 0 auto;
+        overflow: visible;
+      }
+
+      .step-label {
+        font-size: 24px;
+      }
+
+      .field-pair {
+        gap: 20px;
+      }
+
+      #screen-overeni .content {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        align-content: start;
+      }
+
+      #screen-overeni .content > .ds-input {
+        margin-bottom: 0 !important;
+      }
+
+      #screen-overeni #overeni-datum-msg {
+        grid-column: 1;
+        margin-top: -14px !important;
+      }
+
+      #screen-foto .content {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        align-items: stretch;
+      }
+
+      #screen-foto .content > .infobox {
+        grid-column: 1 / -1;
+        margin-bottom: 0;
+      }
+
+      #screen-foto .upload-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        margin-bottom: 0;
+      }
+
+      #screen-foto .upload-zone {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .bottom-nav {
+        position: static;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        margin: var(--s) auto 0;
+        padding: 0 0 var(--l);
+        box-shadow: none;
+        background: transparent;
+      }
+
+      .bottom-nav > .btn {
+        width: calc(50% - 10px);
+        max-width: 310px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .nav-row {
+        gap: 20px;
+        justify-content: center;
+      }
+
+      .nav-row .btn-p,
+      .nav-row .btn-s {
+        flex: 0 0 calc(50% - 10px);
+        max-width: 310px;
+      }
+
+      .nav-row .btn-t {
+        flex: 0 0 auto;
+      }
+    }
+
     /* ── AI LOADING ──────────────────────────── */
     .load-center {
       flex: 1;
@@ -747,6 +914,17 @@
       gap: 8px;
     }
     .liq-block.open .liq-expand { display: flex; }
+    .liq-contact-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .liq-call-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
     .liq-phone-row {
       display: flex;
       align-items: flex-start;
@@ -838,6 +1016,83 @@
       display: flex; align-items: center; justify-content: center;
     }
     .liq-called-txt { font-size: 14px; color: var(--dark); line-height: 1.35; }
+
+    @media (min-width: 1024px) {
+      .liq-block {
+        border: 1px solid var(--border-light);
+        border-radius: 20px;
+        margin: var(--xs) 0 var(--s);
+        padding: 0 12px;
+        background: var(--white);
+        overflow: visible;
+      }
+
+      .liq-block.open {
+        padding-bottom: 12px;
+      }
+
+      .liq-trigger {
+        gap: 10px;
+        padding: 10px 0;
+        background: transparent;
+      }
+
+      .liq-ico {
+        width: 28px;
+        height: 28px;
+      }
+
+      .liq-ico svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .liq-title {
+        font-size: 14px;
+      }
+
+      .liq-chevron {
+        width: 16px;
+        height: 16px;
+      }
+
+      .liq-expand {
+        padding: 0;
+        background: transparent;
+        border-top: 0;
+      }
+
+      .liq-contact-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .liq-chat-card,
+      .liq-call-card {
+        min-width: 0;
+      }
+
+      .liq-chat-card {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .liq-call-card {
+        padding: 10px 12px;
+        border-radius: 18px;
+        border: 1px solid var(--border-light);
+        background: var(--white);
+      }
+
+      .liq-chat-btn,
+      .liq-call-btn {
+        width: 100%;
+        align-self: stretch;
+      }
+    }
 
     /* ── DATE/TIME FIELDS ────────────────────── */
     .field-pair {
@@ -1436,45 +1691,50 @@
         </svg>
       </div>
       <div class="liq-expand" id="liq-4-expand">
-        <div class="liq-chat-card">
-          <div class="liq-chat-main">
-            <p class="liq-option-label">Doporučeně</p>
-            <p class="liq-chat-title">Poradit se přes chat</p>
-          </div>
-          <button class="btn btn-p liq-chat-btn" id="liq-4-chat-btn" type="button" onclick="requestChat('liq-4')">Otevřít chat</button>
-        </div>
-        <p class="liq-option-label">Nebo vám zavoláme</p>
-        <div class="liq-phone-row">
-          <div class="liq-phone-main">
-            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
-            <div class="liq-phone-num-line">
-              <p class="liq-phone-num" id="liq-4-phone-display">721 234 951</p>
-              <button class="liq-edit-btn" type="button" onclick="toggleLiqPhoneEdit('liq-4')" aria-label="Upravit telefonní číslo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 20h9"/>
-                  <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                </svg>
-                Upravit
-              </button>
+        <div class="liq-contact-grid">
+          <div class="liq-chat-card">
+            <div class="liq-chat-main">
+              <p class="liq-option-label">Doporučeně</p>
+              <p class="liq-chat-title">Poradit se přes chat</p>
             </div>
-            <p class="liq-phone-helper">(číslo uvedené na smlouvě)</p>
+            <button class="btn btn-p liq-chat-btn" id="liq-4-chat-btn" type="button" onclick="requestChat('liq-4')">Otevřít chat</button>
           </div>
-        </div>
-        <div class="liq-phone-edit" id="liq-4-phone-edit">
-          <label class="ds-input" for="liq-4-phone-input">
-            <span class="ds-lbl">Telefonní číslo</span>
-            <input type="text" id="liq-4-phone-input" value="721 234 951" inputmode="tel">
-          </label>
-          <button class="btn btn-s" type="button" onclick="saveLiqPhone('liq-4')">Uložit</button>
-        </div>
-        <button class="btn btn-s liq-call-btn" type="button" onclick="requestCallback('liq-4')">Zavolejte mi</button>
-        <div class="liq-called" id="liq-4-called">
-          <div class="liq-called-ico">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12l5 5 9-10"/>
-            </svg>
+
+          <div class="liq-call-card">
+            <p class="liq-option-label">Nebo vám zavoláme</p>
+            <div class="liq-phone-row">
+              <div class="liq-phone-main">
+                <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
+                <div class="liq-phone-num-line">
+                  <p class="liq-phone-num" id="liq-4-phone-display">721 234 951</p>
+                  <button class="liq-edit-btn" type="button" onclick="toggleLiqPhoneEdit('liq-4')" aria-label="Upravit telefonní číslo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 20h9"/>
+                      <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                    </svg>
+                    Upravit
+                  </button>
+                </div>
+                <p class="liq-phone-helper">(číslo uvedené na smlouvě)</p>
+              </div>
+            </div>
+            <div class="liq-phone-edit" id="liq-4-phone-edit">
+              <label class="ds-input" for="liq-4-phone-input">
+                <span class="ds-lbl">Telefonní číslo</span>
+                <input type="text" id="liq-4-phone-input" value="721 234 951" inputmode="tel">
+              </label>
+              <button class="btn btn-s" type="button" onclick="saveLiqPhone('liq-4')">Uložit</button>
+            </div>
+            <button class="btn btn-s liq-call-btn" type="button" onclick="requestCallback('liq-4')">Zavolejte mi</button>
+            <div class="liq-called" id="liq-4-called">
+              <div class="liq-called-ico">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12l5 5 9-10"/>
+                </svg>
+              </div>
+              <p class="liq-called-txt">Obvykle se vám ozve do <strong>5 minut</strong>.</p>
+            </div>
           </div>
-          <p class="liq-called-txt">Obvykle se vám ozve do <strong>5 minut</strong>.</p>
         </div>
       </div>
     </div>
@@ -1532,7 +1792,6 @@
         <span class="pay-amount neg">−2 000 Kč</span>
       </div>
 
-      <div class="div" style="margin-bottom:0"></div>
       <div class="pay-total">
         <span class="pay-total-lbl">Celkem</span>
         <span class="pay-total-amt" id="pay-total-amt">10 400 Kč</span>
@@ -1554,45 +1813,50 @@
         </svg>
       </div>
       <div class="liq-expand" id="liq-5-expand">
-        <div class="liq-chat-card">
-          <div class="liq-chat-main">
-            <p class="liq-option-label">Doporučeně</p>
-            <p class="liq-chat-title">Poradit se přes chat</p>
-          </div>
-          <button class="btn btn-p liq-chat-btn" id="liq-5-chat-btn" type="button" onclick="requestChat('liq-5')">Otevřít chat</button>
-        </div>
-        <p class="liq-option-label">Nebo vám zavoláme</p>
-        <div class="liq-phone-row">
-          <div class="liq-phone-main">
-            <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
-            <div class="liq-phone-num-line">
-              <p class="liq-phone-num" id="liq-5-phone-display">721 234 951</p>
-              <button class="liq-edit-btn" type="button" onclick="toggleLiqPhoneEdit('liq-5')" aria-label="Upravit telefonní číslo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 20h9"/>
-                  <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                </svg>
-                Upravit
-              </button>
+        <div class="liq-contact-grid">
+          <div class="liq-chat-card">
+            <div class="liq-chat-main">
+              <p class="liq-option-label">Doporučeně</p>
+              <p class="liq-chat-title">Poradit se přes chat</p>
             </div>
-            <p class="liq-phone-helper">(číslo uvedené na smlouvě)</p>
+            <button class="btn btn-p liq-chat-btn" id="liq-5-chat-btn" type="button" onclick="requestChat('liq-5')">Otevřít chat</button>
           </div>
-        </div>
-        <div class="liq-phone-edit" id="liq-5-phone-edit">
-          <label class="ds-input" for="liq-5-phone-input">
-            <span class="ds-lbl">Telefonní číslo</span>
-            <input type="text" id="liq-5-phone-input" value="721 234 951" inputmode="tel">
-          </label>
-          <button class="btn btn-s" type="button" onclick="saveLiqPhone('liq-5')">Uložit</button>
-        </div>
-        <button class="btn btn-s liq-call-btn" type="button" onclick="requestCallback('liq-5')">Zavolejte mi</button>
-        <div class="liq-called" id="liq-5-called">
-          <div class="liq-called-ico">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12l5 5 9-10"/>
-            </svg>
+
+          <div class="liq-call-card">
+            <p class="liq-option-label">Nebo vám zavoláme</p>
+            <div class="liq-phone-row">
+              <div class="liq-phone-main">
+                <p class="liq-phone-lbl">Zavoláme vám na číslo</p>
+                <div class="liq-phone-num-line">
+                  <p class="liq-phone-num" id="liq-5-phone-display">721 234 951</p>
+                  <button class="liq-edit-btn" type="button" onclick="toggleLiqPhoneEdit('liq-5')" aria-label="Upravit telefonní číslo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 20h9"/>
+                      <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                    </svg>
+                    Upravit
+                  </button>
+                </div>
+                <p class="liq-phone-helper">(číslo uvedené na smlouvě)</p>
+              </div>
+            </div>
+            <div class="liq-phone-edit" id="liq-5-phone-edit">
+              <label class="ds-input" for="liq-5-phone-input">
+                <span class="ds-lbl">Telefonní číslo</span>
+                <input type="text" id="liq-5-phone-input" value="721 234 951" inputmode="tel">
+              </label>
+              <button class="btn btn-s" type="button" onclick="saveLiqPhone('liq-5')">Uložit</button>
+            </div>
+            <button class="btn btn-s liq-call-btn" type="button" onclick="requestCallback('liq-5')">Zavolejte mi</button>
+            <div class="liq-called" id="liq-5-called">
+              <div class="liq-called-ico">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#165315" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12l5 5 9-10"/>
+                </svg>
+              </div>
+              <p class="liq-called-txt">Obvykle se vám ozve do <strong>5 minut</strong>.</p>
+            </div>
           </div>
-          <p class="liq-called-txt">Obvykle se vám ozve do <strong>5 minut</strong>.</p>
         </div>
       </div>
     </div>
@@ -1715,6 +1979,10 @@
     const nav = screenEl.querySelector('.bottom-nav');
     const content = screenEl.querySelector('.content');
     if (!nav || !content) return;
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      content.style.paddingBottom = '0px';
+      return;
+    }
     const navH = nav.getBoundingClientRect().height;
     content.style.paddingBottom = (navH + 16) + 'px';
   }
@@ -2472,6 +2740,11 @@
     updateTextareaCounter('majetek-popis', 'majetek-popis-counter');
     validateMediaStep();
     // date intentionally empty — user must choose consciously
+  });
+
+  window.addEventListener('resize', () => {
+    const active = document.querySelector('.screen.active');
+    if (active) requestAnimationFrame(() => adjustContentPadding(active));
   });
 
   // ── Likvidátor inline expand ──────────────────────

@@ -109,6 +109,8 @@ Doporučený zápis poznámky:
 - [ ] Krok obsahuje dvě upload sekce: `Detailní pohled *` a `Celkový pohled *`.
 - [ ] Texty uploadu říkají `foto nebo video`, ne pouze `fotka`.
 - [ ] Prázdné upload zóny jsou kompaktní horizontální card, ne vysoký hero block.
+- [ ] Na desktopu jsou `Detailní pohled` a `Celkový pohled` vedle sebe ve 2 sloupcích.
+- [ ] Desktop upload sekce jsou opticky stejně vysoké přes grid/flex stretch, bez pevně nastavené výšky.
 - [ ] Obě file input pole podporují `image/*,video/*`.
 - [ ] Bez detailního i celkového souboru je CTA disabled.
 - [ ] Po přidání pouze detailního souboru zůstává CTA disabled.
@@ -161,6 +163,10 @@ Doporučený zápis poznámky:
 - [ ] Sekce rychlé pomoci má zavřený text „Potřebujete rychlou pomoc?“ a nezobrazuje druhý řádek o likvidátorovi.
 - [ ] Po rozkliknutí rychlé pomoci je jako první a vizuálně primární možnost chat, ne callback.
 - [ ] Callback je sekundární, menší alternativa, aby UI zbytečně nenavádělo k dražšímu telefonnímu kanálu.
+- [ ] Na desktopu krok drží stejný kompaktní středový `640px` stack jako zbytek hlášenky, ne pravý aside layout.
+- [ ] Na desktopu má rychlá pomoc kompaktní zavřený disclosure stav v jemném kontejneru; nepůsobí jako oříznutý řádek a nepřitahuje víc pozornosti než přehled škod.
+- [ ] Na desktopu se rychlá pomoc rozbalí až po kliknutí; chat zůstává primární, callback sekundární.
+- [ ] Na desktopu rozbalená rychlá pomoc drží obsah v jemném kontejneru; boxy chatu a callbacku nejsou oříznuté ani vizuálně nevyčnívají mimo obsah.
 - [ ] Po rozkliknutí rychlé pomoci se zobrazí „Zavoláme vám na číslo“, číslo `721 234 951` a helper „(číslo uvedené na smlouvě)“.
 - [ ] Edit button je vizuálně přímo u telefonního čísla, ne jako akce celé sekce.
 - [ ] Edit button u telefonu otevře pole pro úpravu čísla a po uložení se nové číslo propíše do zobrazení.
@@ -176,9 +182,14 @@ Doporučený zápis poznámky:
 - [ ] V rozpisu je hlavní řádek „Škoda celkem“ a druhý řádek „Sklokeramická deska — výměna“.
 - [ ] Spoluúčast má vysvětlení „(tuto část škody platíte vy)“.
 - [ ] Součtový řádek má label „Celkem“, ne „Celkem k vyplacení“.
+- [ ] Mezi spoluúčastí a součtem není double divider.
 - [ ] Sekce pomoci se jmenuje „Nerozumíte částce?“.
 - [ ] Po rozkliknutí sekce pomoci je jako první a vizuálně primární možnost chat, ne callback.
 - [ ] Callback je sekundární, menší alternativa a chová se stejně jako na kroku 5.
+- [ ] Na desktopu krok drží stejný kompaktní středový `640px` stack jako zbytek hlášenky, ne pravý aside layout.
+- [ ] Na desktopu má sekce pomoci kompaktní zavřený disclosure stav v jemném kontejneru; nepůsobí jako oříznutý řádek a nepřitahuje víc pozornosti než částka k vyplacení.
+- [ ] Na desktopu se sekce pomoci rozbalí až po kliknutí; chat zůstává primární, callback sekundární.
+- [ ] Na desktopu rozbalená sekce pomoci drží obsah v jemném kontejneru; boxy chatu a callbacku nejsou oříznuté ani vizuálně nevyčnívají mimo obsah.
 - [ ] Edit button u telefonu otevře pole pro úpravu čísla a po uložení se nové číslo propíše do zobrazení.
 - [ ] Primární chat CTA má text „Otevřít chat“ a pod CTA se nezobrazuje zbytečný status typu „Chat je připravený k otevření“.
 - [ ] Účet pro výplatu je viditelný.
@@ -199,13 +210,16 @@ Doporučený zápis poznámky:
 
 ---
 
-## Responsivita a mobilní chování
+## Responsivita a grid
 
 Testuj minimálně šířky:
 
 - [ ] 320 px
 - [ ] 390 px
 - [ ] 430 px
+- [ ] 769 px
+- [ ] 1024 px
+- [ ] 1440 px
 
 Kontroly:
 
@@ -213,6 +227,15 @@ Kontroly:
 - [ ] Tlačítka mají dostatečnou tap area.
 - [ ] Klávesnice na mobilu nepřekryje aktivní pole nebo bottom sheet tak, že nejde pokračovat.
 - [ ] Sticky header a bottom navigation se chovají stabilně.
+- [ ] Tablet layout drží sjednavač šířku `484px` centrovaně.
+- [ ] Desktop layout drží celé flow v kompaktním středovém `640px` stacku.
+- [ ] Desktop stepper je kompaktní a spojnice mezi kroky na sebe opticky navazují.
+- [ ] Na desktopu jsou inputy v prvním kroku v 2sloupcovém gridu, tedy přibližně 50 % šířky obsahu.
+- [ ] Na desktopu není CTA floating; je staticky pod formulářovým obsahem a centrované v gridu.
+- [ ] Na desktopu je button group se sekundární/terciární akcí centrovaná jako celek, ne zarovnaná vlevo.
+- [ ] Na desktopu CTA drží law of proximity — je hned pod formulářem, ne odtržené u spodní hrany viewportu.
+- [ ] Desktop layout nepůsobí jako roztažený mobilní 390px prototyp.
+- [ ] Mobile layout do 768 px zůstává bez vizuální regrese proti původnímu prototypu.
 
 ---
 
