@@ -1333,7 +1333,7 @@
           <path d="M7 3v3M17 3v3M4 9h16M6 5h12a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2z"/>
         </svg>
       </button>
-      <input type="date" id="overeni-datum-picker" class="date-picker-native" min="1900-01-01" tabindex="-1" aria-hidden="true" onchange="syncBirthDateFromPicker()">
+      <input type="date" id="overeni-datum-picker" class="date-picker-native" min="1900-01-01" tabindex="-1" aria-label="Vybrat datum narození z kalendáře" onpointerdown="prepareDatePicker('overeni-datum', 'overeni-datum-picker')" onfocus="prepareDatePicker('overeni-datum', 'overeni-datum-picker')" onchange="syncBirthDateFromPicker(event)">
     </div>
     <p class="helper-text" id="overeni-datum-msg" style="margin-top:6px;margin-bottom:0">Např. 14.02.1988</p>
   </div>
@@ -1379,7 +1379,7 @@
             <path d="M7 3v3M17 3v3M4 9h16M6 5h12a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2z"/>
           </svg>
         </button>
-        <input type="date" id="incident-date-picker" class="date-picker-native" min="1900-01-01" tabindex="-1" aria-hidden="true" onchange="syncDateFromPicker('incident-date', 'incident-date-picker', validateUdalost)">
+        <input type="date" id="incident-date-picker" class="date-picker-native" min="1900-01-01" tabindex="-1" aria-label="Vybrat datum události z kalendáře" onpointerdown="prepareDatePicker('incident-date', 'incident-date-picker')" onfocus="prepareDatePicker('incident-date', 'incident-date-picker')" onchange="syncDateFromPicker('incident-date', 'incident-date-picker', validateUdalost, event)">
       </div>
       <label class="ds-input">
         <span class="ds-lbl">Přibližný čas  *</span>
@@ -2227,7 +2227,7 @@
       month,
       year,
       dayDone: value.includes('.') || (!isDeleting && day.length === 2),
-      monthDone: explicitMonthSeparator || month.length === 2 || year.length > 0
+      monthDone: explicitMonthSeparator || (!isDeleting && month.length === 2) || year.length > 0
     };
   }
 
@@ -2404,11 +2404,8 @@
     event.preventDefault();
     event.stopPropagation();
 
-    const input = document.getElementById(inputId);
+    prepareDatePicker(inputId, pickerId);
     const picker = document.getElementById(pickerId);
-    const isoDate = displayToIsoDate(input.value.trim());
-
-    if (isoDate) picker.value = isoDate;
 
     if (typeof picker.showPicker === 'function') {
       picker.showPicker();
@@ -2417,17 +2414,46 @@
     }
   }
 
-  function syncBirthDateFromPicker() {
-    syncDateFromPicker('overeni-datum', 'overeni-datum-picker', validateOvereni);
+  function prepareDatePicker(inputId, pickerId) {
+    const input = document.getElementById(inputId);
+    const picker = document.getElementById(pickerId);
+    const isoDate = displayToIsoDate(input.value.trim());
+
+    picker.value = isoDate || '';
+    picker.dataset.openedAt = String(Date.now());
+    picker.dataset.preparedValue = picker.value;
+    picker.dataset.linkedValue = input.value.trim();
   }
 
-  function syncDateFromPicker(inputId, pickerId, validateFn) {
+  function shouldIgnorePickerAutoDefault(picker) {
+    const openedAt = Number(picker.dataset.openedAt || 0);
+    const wasEmpty = !(picker.dataset.linkedValue || '');
+    const preparedEmpty = !(picker.dataset.preparedValue || '');
+    const changedImmediately = openedAt > 0 && Date.now() - openedAt < 500;
+
+    return wasEmpty &&
+           preparedEmpty &&
+           changedImmediately &&
+           picker.value === todayIsoLocal();
+  }
+
+  function syncBirthDateFromPicker(event = null) {
+    syncDateFromPicker('overeni-datum', 'overeni-datum-picker', validateOvereni, event);
+  }
+
+  function syncDateFromPicker(inputId, pickerId, validateFn, event = null) {
     const picker = document.getElementById(pickerId);
     const input = document.getElementById(inputId);
 
+    if (!picker.value) return;
+    if (shouldIgnorePickerAutoDefault(picker)) {
+      picker.value = '';
+      return;
+    }
+
     input.value = isoToDisplayDate(picker.value);
     validateFn(true);
-    input.focus();
+    picker.blur();
   }
 
   function setDateFieldError(inputId, msgId, show, errorText, defaultText = '') {

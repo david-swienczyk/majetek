@@ -58,6 +58,8 @@ Doporučený zápis poznámky:
 - [ ] Po zadání dvou číslic měsíce se tečka doplní automaticky.
 - [ ] Backspace z hodnoty `31.3.1` smaže postupně `1` → `31.3.` → `31.3` → `31.` → `31` a maska tečku hned znovu nenutí.
 - [ ] Backspace z hodnoty `14.02.1988` umožní smazat rok, měsíc i den bez zaseknutí na automaticky doplněné tečce.
+- [ ] Backspace z hodnoty `14.02.` smaže tečku za měsícem na `14.02`, nevrátí ji okamžitě zpět.
+- [ ] Backspace z hodnoty `14.02` pokračuje přes `14.0` → `14.` → `14` bez zaseknutí na tečce.
 - [ ] Neplatné datum `31.02.2010` zobrazí error a CTA zůstane disabled.
 - [ ] Budoucí datum zobrazí error a CTA zůstane disabled.
 - [ ] Rok před `1900` zobrazí error a CTA zůstane disabled.
@@ -67,6 +69,8 @@ Doporučený zápis poznámky:
 
 - [ ] Ikona kalendáře otevře nativní date picker, pokud ho prohlížeč podporuje.
 - [ ] Na mobilu tapnutí na ikonovou část kalendáře otevře nativní date picker.
+- [ ] Na mobilu otevření date pickeru nevyvolá textovou klávesnici.
+- [ ] Na mobilu pouhé otevření date pickeru nevyplní automaticky dnešní datum.
 - [ ] Na mobilu tapnutí do textové části pole data narození pořád aktivuje ruční zadání klávesnicí.
 - [ ] Výběr data z pickeru se propíše do textového pole jako `DD.MM.RRRR`.
 - [ ] Po výběru platného data je CTA enabled, pokud jsou vyplněná i ostatní povinná pole.
@@ -85,6 +89,8 @@ Doporučený zápis poznámky:
 - [ ] Datum události jde zadat ručně jako `DD.MM.RRRR`.
 - [ ] Datum události jde vybrat přes ikonu kalendáře.
 - [ ] Na mobilu tapnutí na ikonovou část kalendáře u data události otevře nativní date picker.
+- [ ] Na mobilu otevření date pickeru u data události nevyvolá textovou klávesnici.
+- [ ] Na mobilu pouhé otevření date pickeru u data události nevyplní automaticky dnešní datum.
 - [ ] Na mobilu tapnutí do textové části data události pořád aktivuje ruční zadání klávesnicí.
 - [ ] Postupné psaní data události `31.3.` ponechá hodnotu `31.3.`.
 - [ ] Postupné psaní data události `31.3.1990` je validní a po opuštění pole se normalizuje na `31.03.1990`.
