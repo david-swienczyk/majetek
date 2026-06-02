@@ -71,6 +71,7 @@ Doporučený zápis poznámky:
 - [ ] Na mobilu tapnutí na ikonovou část kalendáře otevře nativní date picker.
 - [ ] Na mobilu otevření date pickeru nevyvolá textovou klávesnici.
 - [ ] Na mobilu pouhé otevření date pickeru nevyplní automaticky dnešní datum.
+- [ ] Na mobilu se date picker při práci s kalendářem / kolečky sám nezavře kvůli blur/focus zásahu prototypu.
 - [ ] Na mobilu tapnutí do textové části pole data narození pořád aktivuje ruční zadání klávesnicí.
 - [ ] Výběr data z pickeru se propíše do textového pole jako `DD.MM.RRRR`.
 - [ ] Po výběru platného data je CTA enabled, pokud jsou vyplněná i ostatní povinná pole.
@@ -91,6 +92,7 @@ Doporučený zápis poznámky:
 - [ ] Na mobilu tapnutí na ikonovou část kalendáře u data události otevře nativní date picker.
 - [ ] Na mobilu otevření date pickeru u data události nevyvolá textovou klávesnici.
 - [ ] Na mobilu pouhé otevření date pickeru u data události nevyplní automaticky dnešní datum.
+- [ ] Na mobilu se date picker u data události při práci s kalendářem / kolečky sám nezavře kvůli blur/focus zásahu prototypu.
 - [ ] Na mobilu tapnutí do textové části data události pořád aktivuje ruční zadání klávesnicí.
 - [ ] Postupné psaní data události `31.3.` ponechá hodnotu `31.3.`.
 - [ ] Postupné psaní data události `31.3.1990` je validní a po opuštění pole se normalizuje na `31.03.1990`.
